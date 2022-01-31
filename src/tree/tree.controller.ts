@@ -32,7 +32,6 @@ export class TreeController implements interfaces.Controller {
   @httpGet("/tree")
   async retrieveTree(@request() request: express.Request, @response() res: express.Response) {
     const searchRequest: TreeSearchCondition = {
-      depth: request.query.depth ? Number(request.query.depth) : 1,
       parent: request.query.parent ? Number(request.query.parent) : 0,
       secret: request.query.secret ? Number(request.query.secret) : 0,
     };

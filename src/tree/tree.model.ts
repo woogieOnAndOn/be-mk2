@@ -9,7 +9,6 @@ export interface Tree {
 }
 
 export interface TreeSearchCondition {
-  depth : number;
   parent: number;
   secret: number;
 }

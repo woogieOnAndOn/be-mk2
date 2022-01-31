@@ -96,11 +96,9 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.secret,
           NULL AS children
         FROM tree tr
-        WHERE tr.depth = ?
-        AND tr.parent = ?
+        WHERE tr.parent = ?
         AND tr.delete_yn = 'N'
       `);
-      queryParams.push(request.depth);
       queryParams.push(request.parent);
 
       if (request.secret === 0) {
