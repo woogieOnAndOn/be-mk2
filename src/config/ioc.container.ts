@@ -21,8 +21,8 @@ import { IssueStateHistoryRepository } from '../issue/issueStateHistory.reposito
 import { FileController } from '../common/file.controller';
 import { TreeFileController } from '../tree/treeFile.controller';
 
-import { AWSFileUploader } from '../file/aws-file-uploader';
-import { RemoteFileUpload } from '../file/remote-file-upload';
+import { AWSFileUploader } from '../file/awsFileUploader';
+import { RemoteFileUpload } from '../file/remoteFileUpload';
 
 const container = new Container();
 

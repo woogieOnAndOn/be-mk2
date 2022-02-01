@@ -2,7 +2,7 @@ import { interfaces, controller, httpGet, httpPost, httpDelete, request, queryPa
 import { inject } from "inversify";
 
 import { File } from "./file.model";
-import { RemoteFileUpload } from "./remote-file-upload"
+import { RemoteFileUpload } from "./remoteFileUpload"
 
 @controller("")
 export class FileUploadController implements interfaces.Controller {

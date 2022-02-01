@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { File, UploadedFile } from "./file.model";
-import { AWSFileUploader } from './aws-file-uploader';
+import { AWSFileUploader } from './awsFileUploader';
 
 @injectable()
 export class RemoteFileUpload {

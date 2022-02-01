@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 import { container } from "../config/ioc.container";
 import multer from "multer";
-import { FileUploadController } from "./file-upload-controller";
-import { fileHandler } from "./file-handler";
+import { FileUploadController } from "./fileUpload.controller";
+import { fileHandler } from "./fileHandler";
 
 const upload = multer();
 
