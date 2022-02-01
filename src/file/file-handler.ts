@@ -1,6 +1,4 @@
-import { File, UploadedFile } from "./file.model";
-import { FileUpload } from "./file.model";
-import { FileUploader } from "./file.model";
+import { File } from "./file.model";
 import { Request, Response, NextFunction } from "express";
 
 export const fileHandler = (req: Request, _: Response, next: NextFunction) => {

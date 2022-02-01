@@ -2,7 +2,6 @@ import { injectable } from "inversify";
 import AWS from "aws-sdk";
 
 import { File, UploadedFile } from "./file.model";
-import { FileUpload } from "./file.model";
 import { FileUploader } from "./file.model";
 import { s3Config } from "../config/s3.const";
 
@@ -37,14 +36,6 @@ export class AWSFileUploader implements FileUploader {
       ACL: s3Config.defaultFilesACL,
     };
 
-    // await this.client.upload(uploadParams, async (err: any, data: any) => {
-    //   if (err) {
-    //     console.log("Error!", err);
-    //   } if (data) {
-    //     console.log("Upload Success", data);
-    //     result = data.Location;
-    //   }
-    // }).promise();
     const response = await this.client.upload(uploadParams).promise();
     console.log(response);
 
