@@ -44,7 +44,7 @@ export class FileController implements interfaces.Controller {
     const fileKey = this.generateFileKey(file, timestamp);
 
     const uploadParams = {
-      Bucket: s3Config.bucketName,
+      Bucket: s3Config.accessPoint,
       Key: fileKey,
       ContentType: file.type,
       Body: file.content,

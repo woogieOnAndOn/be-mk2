@@ -10,7 +10,7 @@ AWS.config.loadFromPath(__dirname + "/s3.config.json");
 export class AWSFileUploader {
   private client: AWS.S3;
 
-  private readonly bucketName = s3Config.bucketName;
+  private readonly bucketName = s3Config.accessPoint;
 
   constructor() {
     this.client = new AWS.S3({
@@ -35,10 +35,12 @@ export class AWSFileUploader {
       ACL: s3Config.defaultFilesACL,
     };
 
+    console.log(this.client);
+
     const response = await this.client.upload(uploadParams).promise();
 
     if(response) {
-      result = response.Location;
+      result = s3Config.bucketAddress + response.Key;
     }
 
     return result;
