@@ -1,13 +1,11 @@
 import { inject, injectable } from "inversify";
-
 import { File, UploadedFile } from "./file.model";
-import { FileUpload } from "./file.model";
-import { FileUploader } from "./file.model";
+import { AWSFileUploader } from './aws-file-uploader';
 
 @injectable()
-export class RemoteFileUpload implements FileUpload {
+export class RemoteFileUpload {
   constructor(
-    @inject("FileUploader") private readonly fileUploader: FileUploader
+    @inject("AWSFileUploader") private readonly fileUploader: AWSFileUploader
   ) {}
 
   async upload(files: File[]): Promise<UploadedFile[]> {

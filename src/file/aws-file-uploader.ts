@@ -2,13 +2,12 @@ import { injectable } from "inversify";
 import AWS from "aws-sdk";
 
 import { File, UploadedFile } from "./file.model";
-import { FileUploader } from "./file.model";
 import { s3Config } from "../config/s3.const";
 
 AWS.config.loadFromPath(__dirname + "/s3.config.json");
 
 @injectable()
-export class AWSFileUploader implements FileUploader {
+export class AWSFileUploader {
   private client: AWS.S3;
 
   private readonly bucketName = s3Config.bucketName;

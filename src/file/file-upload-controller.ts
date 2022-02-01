@@ -2,13 +2,13 @@ import { interfaces, controller, httpGet, httpPost, httpDelete, request, queryPa
 import { inject } from "inversify";
 
 import { File } from "./file.model";
-import { FileUpload } from "./file.model";
+import { RemoteFileUpload } from "./remote-file-upload"
 
 @controller("")
 export class FileUploadController implements interfaces.Controller {
   constructor(
-    @inject("FileUpload")
-    private readonly fileUpload: FileUpload
+    @inject("RemoteFileUpload")
+    private readonly fileUpload: RemoteFileUpload
   ) {}
 
   async handle(@request() request: { files: File[] }) {

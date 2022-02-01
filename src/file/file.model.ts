@@ -9,13 +9,3 @@ export interface File {
 export interface UploadedFile {
   path: string;
 }
-
-export interface FileUpload {
-  upload: (files: File[]) => Promise<UploadedFile[]>;
-}
-
-export interface FileUploader {
-  upload: (
-    files: File | File[]
-  ) => Promise<UploadedFile | UploadedFile[] | undefined>;
-}

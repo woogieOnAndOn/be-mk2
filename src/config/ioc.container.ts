@@ -21,7 +21,6 @@ import { IssueStateHistoryRepository } from '../issue/issueStateHistory.reposito
 import { FileController } from '../common/file.controller';
 import { TreeFileController } from '../tree/treeFile.controller';
 
-import { FileUpload, FileUploader } from '../file/file.model';
 import { AWSFileUploader } from '../file/aws-file-uploader';
 import { RemoteFileUpload } from '../file/remote-file-upload';
 
@@ -51,8 +50,8 @@ try {
     container.bind<FileController>('FileController').to(FileController);
     container.bind<TreeFileController>('TreeFileController').to(TreeFileController);
 
-    container.bind<FileUploader>("FileUploader").to(AWSFileUploader);
-    container.bind<FileUpload>("FileUpload").to(RemoteFileUpload);
+    container.bind<AWSFileUploader>("AWSFileUploader").to(AWSFileUploader);
+    container.bind<RemoteFileUpload>("RemoteFileUpload").to(RemoteFileUpload);
 
 } catch (error) {
     throw error;
