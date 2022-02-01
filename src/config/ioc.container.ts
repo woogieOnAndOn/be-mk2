@@ -18,6 +18,13 @@ import { IssueRepository } from '../issue/issue.repository';
 
 import { IssueStateHistoryRepository } from '../issue/issueStateHistory.repository';
 
+import { FileController } from '../common/file.controller';
+import { TreeFileController } from '../tree/treeFile.controller';
+
+import { FileUpload, FileUploader } from '../file/file.model';
+import { AWSFileUploader } from '../file/aws-file-uploader';
+import { RemoteFileUpload } from '../file/remote-file-upload';
+
 const container = new Container();
 
 try {
@@ -40,6 +47,12 @@ try {
     container.bind<IssueRepository>('IssueRepository').to(IssueRepository);
 
     container.bind<IssueStateHistoryRepository>('IssueStateHistoryRepository').to(IssueStateHistoryRepository);
+
+    container.bind<FileController>('FileController').to(FileController);
+    container.bind<TreeFileController>('TreeFileController').to(TreeFileController);
+
+    container.bind<FileUploader>("FileUploader").to(AWSFileUploader);
+    container.bind<FileUpload>("FileUpload").to(RemoteFileUpload);
 
 } catch (error) {
     throw error;

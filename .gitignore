@@ -103,3 +103,7 @@ dist
 # TernJS port file
 .tern-port
 src/utils/dbConnectionFactory.util.ts
+
+# s3
+s3.config.json
+s3.const.ts
