@@ -17,7 +17,7 @@ uploadRouter.post(
   async (req: Request, res: Response) => {
     const response = await fileUploadController.handle(req.body);
     console.log(response);
-    return response;
+    return res.status(200).json({ paths: response });
   }
 );
 
