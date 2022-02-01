@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import AWS from "aws-sdk";
 
-import { File, UploadedFile } from "./file.model";
+import { File } from "./file.model";
 import { s3Config } from "../config/s3.const";
 
 AWS.config.loadFromPath(__dirname + "/s3.config.json");
@@ -36,7 +36,6 @@ export class AWSFileUploader {
     };
 
     const response = await this.client.upload(uploadParams).promise();
-    console.log(response);
 
     if(response) {
       result = response.Location;
@@ -47,19 +46,17 @@ export class AWSFileUploader {
 
   async upload(
     files: File | File[]
-  ): Promise<UploadedFile | UploadedFile[] | undefined> {
+  ): Promise<string | string[] | undefined> {
     try {
       if (Array.isArray(files)) {
         const paths = await Promise.all(
           files.map(async (file) => this.uploadFile(file))
         );
-        return paths.map((path) => ({ path }));
+        return paths;
       }
 
       const path = await this.uploadFile(files);
-      return {
-        path,
-      };
+      return path;
     } catch {
       return undefined;
     }

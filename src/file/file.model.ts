@@ -6,6 +6,6 @@ export interface File {
   content: ArrayBuffer;
 }
 
-export interface UploadedFile {
-  path: string;
-}
+// export interface UploadedFile {
+//   path: string;
+// }
