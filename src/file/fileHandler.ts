@@ -2,7 +2,9 @@ import { File } from "./file.model";
 import { Request, Response, NextFunction } from "express";
 
 export const fileHandler = (req: Request, _: Response, next: NextFunction) => {
-  const { files } = req;
+  // console.log('fileHandler');
+  let { files } = req;
+  if (!files) files = req.body.files;
 
   const mappedFiles: File[] = ((files as Express.Multer.File[]) || []).map(
     (file) => ({

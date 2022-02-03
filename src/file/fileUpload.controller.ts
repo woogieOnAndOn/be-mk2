@@ -13,6 +13,7 @@ export class FileUploadController implements interfaces.Controller {
 
   async handle(@request() request: { files: File[] }) {
     try {
+      // console.log('handle');
       const { files } = request as { files: File[] };
       const filesPaths = await this.fileUpload.upload(files);
 

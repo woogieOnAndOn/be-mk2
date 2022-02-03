@@ -19,10 +19,12 @@ export class AWSFileUploader {
   }
 
   private generateFileKey(file: File, timestamp: number): string {
+    // console.log('generateFileKey');
     return `${timestamp}-${file.name}`;
   }
 
   private async uploadFile(file: File): Promise<string> {
+    // console.log('uploadFile');
     let result: string = '';
     const timestamp = Date.now();
     const fileKey = this.generateFileKey(file, timestamp);
@@ -35,7 +37,7 @@ export class AWSFileUploader {
       ACL: s3Config.defaultFilesACL,
     };
 
-    console.log(this.client);
+    // console.log(this.client);
 
     const response = await this.client.upload(uploadParams).promise();
 
@@ -50,6 +52,7 @@ export class AWSFileUploader {
     files: File | File[]
   ): Promise<string | string[] | undefined> {
     try {
+      // console.log('upload');
       if (Array.isArray(files)) {
         const paths = await Promise.all(
           files.map(async (file) => this.uploadFile(file))

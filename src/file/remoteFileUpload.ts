@@ -9,6 +9,7 @@ export class RemoteFileUpload {
   ) {}
 
   async upload(files: File[]): Promise<string[]> {
+    // console.log('upload');
     const uploadedFiles = await this.fileUploader.upload(files);
 
     if (!uploadedFiles) {
