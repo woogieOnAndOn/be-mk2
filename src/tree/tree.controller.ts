@@ -23,10 +23,11 @@ export class TreeController implements interfaces.Controller {
   async insertTree(@request() request: express.Request, @response() res: express.Response) {
     const insertRequest: RequestCreateTree = request.body;
     console.log('insert tree=========================================');
-    console.log(insertRequest);
     const result: TransactionResult = await this.treeService.insertTree(insertRequest);
+    const insertedTree: Tree = await this.treeService.getTree({ id: result.insertId });
+    console.log(insertedTree);
     
-    return this.commonController.createReturnMessage(ControllerType.TREE, result, insertRequest, MethodType.CREATE);
+    return this.commonController.createReturnMessage(ControllerType.TREE, result, insertedTree, MethodType.CREATE);
   }
     
   @httpGet("/tree")
