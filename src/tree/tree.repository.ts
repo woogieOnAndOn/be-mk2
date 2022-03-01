@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { CommonRepository } from '../common/common.repository';
-import { RequestCreateTree, RequestUpdateSeqTree, RequestUpdateTree, Tree, TreeSearchCondition } from './tree.model';
+import { RequestCreateTree, RequestGetTree, RequestUpdateSeqTree, RequestUpdateTree, Tree, TreeSearchCondition } from './tree.model';
 import { QueryInfo } from '../common/common.model';
 import { TreeQuery, TreeQueryId } from './tree.query';
 import mysql from 'mysql2';
@@ -47,5 +47,11 @@ export class TreeRepository extends CommonRepository {
   async updateSeqTargetTree<T>(request: RequestUpdateSeqTree, connection?: any): Promise<T> {
     const queryInfo: QueryInfo = TreeQuery(TreeQueryId.updateSeqTargetTree, request);
     return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
+  }
+
+  async getTree<T>(request: RequestGetTree, connection?: any): Promise<T> {
+    const queryInfo: QueryInfo = TreeQuery(TreeQueryId.getTree, request);
+    const rows = await this.query<T>(queryInfo.query, queryInfo.queryParams, connection);
+    return rows[0];
   }
 }

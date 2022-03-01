@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { CommonService } from '../common/common.service';
 import { PoolConnection } from 'mysql2/promise';
 import { TreeRepository } from './tree.repository';
-import { RequestCreateTree, RequestDeleteTree, RequestUpdateSeqTree, RequestUpdateTree, Tree, TreeSearchCondition } from './tree.model';
+import { RequestCreateTree, RequestDeleteTree, RequestGetTree, RequestUpdateSeqTree, RequestUpdateTree, Tree, TreeSearchCondition } from './tree.model';
 import { DBConnectionFactory } from '../utils/dbConnectionFactory.util';
 import { TransactionResult } from '../common/common.model';
 
@@ -66,6 +66,12 @@ export class TreeService {
       } else {
         throw new Error;
       }
+    })
+  }
+
+  async getTree<T>(request: RequestGetTree): Promise<T> {
+    return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
+      return await this.repository.getTree(request, connection);
     })
   }
 }

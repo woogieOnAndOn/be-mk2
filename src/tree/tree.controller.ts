@@ -47,10 +47,11 @@ export class TreeController implements interfaces.Controller {
     const updateRequest: RequestUpdateTree = request.body;
     updateRequest.id = Number(request.params.id);
     console.log('update tree=========================================');
-    console.log(updateRequest);
     const result: TransactionResult = await this.treeService.updateTree(updateRequest);
+    const updatedTree: Tree = await this.treeService.getTree({ id: updateRequest.id });
+    console.log(updatedTree);
     
-    return this.commonController.createReturnMessage(ControllerType.TREE, result, updateRequest, MethodType.UPDATE);
+    return this.commonController.createReturnMessage(ControllerType.TREE, result, updatedTree, MethodType.UPDATE);
   }
 
   @httpDelete("/tree/:id")

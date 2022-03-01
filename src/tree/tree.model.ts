@@ -24,11 +24,8 @@ export interface RequestCreateTree {
 
 export interface RequestUpdateTree {
   id       :number;
-  type     :number;            // 10: folder, 20: file
   name     :string;
   content  :string;
-  depth    :number;
-  parent   :number;
   secret   :number;          // 0: piblic, 1: private
 }
 
@@ -43,6 +40,10 @@ export interface RequestUpdateSeqTree {
   depth    ?:number;
   parent   ?:number;
   upDown   ?:UpDown;
+}
+
+export interface RequestGetTree {
+  id       ?:number;
 }
 
 export enum UpDown {

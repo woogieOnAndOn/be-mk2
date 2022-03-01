@@ -10,6 +10,7 @@ export enum TreeQueryId {
   retrieveDeleteTarget,
   updateSeqSurroundingTree,
   updateSeqTargetTree,
+  getTree,
 }
 
 export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
@@ -158,6 +159,23 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         UPDATE tree 
         SET seq = seq ${request.upDown === UpDown.UP? `-` : `+`} 1
         WHERE id = ?
+      `);
+      queryParams.push(request.id);
+      break;
+    
+    case TreeQueryId.getTree:
+      query.push(`
+        SELECT
+          tr.id,
+          tr.type,
+          tr.name,
+          tr.content,
+          tr.depth,
+          tr.parent,
+          tr.secret,
+          NULL AS children
+        FROM tree tr
+        WHERE tr.id = ?
       `);
       queryParams.push(request.id);
       break;
