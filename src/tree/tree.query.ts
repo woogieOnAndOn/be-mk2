@@ -129,24 +129,42 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
     
     case TreeQueryId.updateSeqSurroundingTree:
       query.push(`
-        UPDATE tree 
-        SET seq = seq ${request.upDown === UpDown.UP? `+` : `-`} 1
-        WHERE id = (
-          SELECT sub.id
-          FROM (
-            SELECT t1.id
-            FROM tree t1
-            WHERE t1.depth = ?
-            AND t1.parent = ?
-            AND t1.type = ?
-            AND t1.seq = (
-              SELECT t2.seq
-              FROM tree t2
-              WHERE t2.id = ?
-            ) ${request.upDown === UpDown.UP? `-` : `+`} 1
-          ) AS sub
-        )
+        UPDATE tree AS tr,
+        (
+          SELECT
+            t1.seq AS givSeq
+            ,t2.id AS surroundId
+          FROM 
+          (
+            SELECT 
+              RANK() OVER(ORDER BY t.seq) AS 'num'
+              ,t.id
+              ,t.seq
+            FROM tree t
+            WHERE t.depth = ?
+            AND t.parent = ?
+            AND t.type = ?
+            ORDER BY seq 
+          ) AS t1
+          JOIN (
+            SELECT 
+              RANK() OVER(ORDER BY t.seq) AS 'num'
+              ,t.id
+            FROM tree t
+            WHERE t.depth = ?
+            AND t.parent = ?
+            AND t.type = ?
+            ORDER BY seq 
+          ) AS t2
+          ON t1.num = t2.num ${request.upDown === UpDown.UP? `+` : `-`} 1
+          WHERE t1.id = ?	
+        ) AS sq
+        SET tr.seq = sq.givSeq
+        WHERE tr.id = sq.surroundId
       `);
+      queryParams.push(request.depth);
+      queryParams.push(request.parent);
+      queryParams.push(request.type);
       queryParams.push(request.depth);
       queryParams.push(request.parent);
       queryParams.push(request.type);
