@@ -4,7 +4,7 @@ import AWS from "aws-sdk";
 import { File } from "./file.model";
 import { s3Config } from "../config/s3.const";
 
-AWS.config.loadFromPath(__dirname + "/s3.config.json");
+AWS.config.loadFromPath(__dirname + "/../config/s3.config.json");
 
 @injectable()
 export class AWSFileUploader {

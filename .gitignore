@@ -71,7 +71,6 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -105,6 +104,7 @@ dist
 # TernJS port file
 .tern-port
 
-# s3
-s3.config.json
-s3.const.ts
+# 배포시 필요
+.env
+src/config/s3.config.json
+src/config/s3.const.ts

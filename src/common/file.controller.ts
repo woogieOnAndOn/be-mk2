@@ -5,7 +5,7 @@ import { s3Config } from "../config/s3.const";
 import { interfaces, controller, httpGet, httpPost, httpDelete, request, queryParam, response, requestParam, httpPut } from "inversify-express-utils";
 import { File } from './file.model';
 
-AWS.config.loadFromPath(__dirname + "/s3.config.json");
+AWS.config.loadFromPath(__dirname + "/../config/s3.config.json");
 
 @injectable()
 export class FileController implements interfaces.Controller {
