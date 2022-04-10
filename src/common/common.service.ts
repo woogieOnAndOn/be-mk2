@@ -29,7 +29,7 @@ export class CommonService {
       if (!inputConnection) await connection.rollback();
       throw err;
     } finally {
-      if (!inputConnection && connection) await connection.release();
+      if (!inputConnection && connection) connection.release();
     }
     return result;
   }

@@ -1,4 +1,4 @@
-import mysql, {Pool, PoolConnection} from 'mysql2/promise';
+import mysql, {Pool, PoolConnection, PoolOptions} from 'mysql2/promise';
 import { inject, injectable } from 'inversify';
 import 'dotenv/config'
 
@@ -9,7 +9,7 @@ export class DBConnectionFactory {
 	private static instance: PoolConnection;
 
 	public async getConnection(): Promise<PoolConnection> {
-		const options = {
+		const options: PoolOptions = {
 			host: process.env.DB_HOST,
 			port: 3306,
 			user: process.env.DB_USER,
@@ -18,11 +18,14 @@ export class DBConnectionFactory {
 			waitForConnections: true,
 			connectionLimit: 5,
 			multipleStatements: true,
+			queueLimit: 0,
+			keepAliveInitialDelay: 10000, // 0 by default.
+			enableKeepAlive: true, // false by default.
 		};
 		
 		try {
 			if (!DBConnectionFactory.pool) {
-        DBConnectionFactory.pool = await mysql.createPool(options);
+        DBConnectionFactory.pool = mysql.createPool(options);
       }
 
 			if (!DBConnectionFactory.instance) {
@@ -34,6 +37,8 @@ export class DBConnectionFactory {
       }
 		} catch(error) {
 			throw error;
+		} finally {
+			DBConnectionFactory.instance.release();
 		}
 		return DBConnectionFactory.instance;
 	}
