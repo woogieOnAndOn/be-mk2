@@ -15,7 +15,7 @@ export const IssueStateHistoryQuery = (queryId: IssueStateHistoryQueryId, reques
   switch(queryId) {
     case IssueStateHistoryQueryId.insertIssueStateHistory:
       query.push(`
-        INSERT INTO issue_state_history
+        INSERT INTO md2.issue_state_history
           (
             issue_id, 
             history_id, 
@@ -27,7 +27,7 @@ export const IssueStateHistoryQuery = (queryId: IssueStateHistoryQueryId, reques
             ?, 
             (
               SELECT IFNULL(MAX(ish.history_id), 0) + 1 
-              FROM issue_state_history ish
+              FROM md2.issue_state_history ish
               WHERE ish.issue_id = ?
             ), 
             ?, 

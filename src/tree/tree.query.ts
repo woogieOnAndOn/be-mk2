@@ -24,7 +24,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
   switch(queryId) {
     case TreeQueryId.insertTree:
       query.push(`
-        INSERT INTO tree
+        INSERT INTO md2.tree
         (
           type,
           name,
@@ -77,7 +77,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
 
     case TreeQueryId.deleteTree:
       query.push(`
-        UPDATE tree
+        UPDATE md2.tree
         SET 
           delete_yn = 'Y'
           ,seq = 99999
@@ -96,7 +96,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.parent,
           tr.secret,
           NULL AS children
-        FROM tree tr
+        FROM md2.tree tr
         WHERE tr.parent = ?
         AND tr.delete_yn = 'N'
       `);
@@ -120,7 +120,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.depth,
           tr.parent,
           tr.secret
-        FROM tree tr
+        FROM md2.tree tr
         WHERE tr.parent = ?
         AND tr.delete_yn = 'N'
       `);
@@ -129,7 +129,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
     
     case TreeQueryId.updateSeqSurroundingTree:
       query.push(`
-        UPDATE tree AS tr,
+        UPDATE md2.tree AS tr,
         (
           SELECT
             t1.seq AS givSeq
@@ -174,7 +174,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
     
     case TreeQueryId.updateSeqTargetTree:
       query.push(`
-        UPDATE tree 
+        UPDATE md2.tree 
         SET seq = seq ${request.upDown === UpDown.UP? `-` : `+`} 1
         WHERE id = ?
       `);
@@ -192,7 +192,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.parent,
           tr.secret,
           NULL AS children
-        FROM tree tr
+        FROM md2.tree tr
         WHERE tr.id = ?
       `);
       queryParams.push(request.id);

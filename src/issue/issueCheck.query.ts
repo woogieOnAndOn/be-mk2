@@ -19,7 +19,7 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
   switch(queryId) {
     case IssueCheckQueryId.insertIssueCheck:
       query.push(`
-        INSERT INTO issue_check
+        INSERT INTO md2.issue_check
           (
             issue_id, 
             check_id, 
@@ -31,7 +31,7 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
             ?, 
             (
               SELECT IFNULL(MAX(ic.check_id), 0) + 1 
-              FROM issue_check ic
+              FROM md2.issue_check ic
               WHERE ic.issue_id = ?
             ), 
             ?, 
@@ -51,7 +51,7 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
           check_name AS checkName, 
           complete_yn AS completeYn, 
           creation_date AS creationDate
-        FROM issue_check
+        FROM md2.issue_check
         WHERE issue_id = ?
       `);
       queryParams.push(request.issueId);
@@ -59,7 +59,7 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
 
     case IssueCheckQueryId.updateIssueCheckName:
       query.push(`
-        UPDATE issue_check
+        UPDATE md2.issue_check
         SET check_name = ?
         WHERE issue_id = ? 
         AND check_id = ?
@@ -71,7 +71,7 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
 
     case IssueCheckQueryId.updateIssueCheckCompleteYn:
       query.push(`
-        UPDATE issue_check
+        UPDATE md2.issue_check
         SET complete_yn = IF(complete_yn = 'N', 'Y', 'N')
         WHERE issue_id = ? 
         AND check_id = ?
@@ -83,7 +83,7 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
     case IssueCheckQueryId.deleteIssueCheck:
       query.push(`
         DELETE 
-        FROM issue_check
+        FROM md2.issue_check
         WHERE issue_id = ? 
         AND check_id = ?
       `);

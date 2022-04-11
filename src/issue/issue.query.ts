@@ -20,7 +20,7 @@ export const IssueQuery = (queryId: IssueQueryId, request: any = {}) => {
   switch(queryId) {
     case IssueQueryId.insertIssue:
       query.push(`
-        INSERT INTO issue
+        INSERT INTO md2.issue
           (
             issue_name, 
             creation_date
@@ -42,13 +42,13 @@ export const IssueQuery = (queryId: IssueQueryId, request: any = {}) => {
           issue_state AS issueState, 
           use_time AS useTime, 
           creation_date AS creationDate
-        FROM issue
+        FROM md2.issue
       `);
       break;
 
     case IssueQueryId.updateIssueName:
       query.push(`
-        UPDATE issue
+        UPDATE md2.issue
         SET issue_name = ?
         WHERE issue_id = ?
       `);
@@ -58,24 +58,24 @@ export const IssueQuery = (queryId: IssueQueryId, request: any = {}) => {
 
     case IssueQueryId.updateUseTime:
       query.push(`
-        UPDATE issue
+        UPDATE md2.issue
         SET use_time = use_time + (
           SELECT ROUND(
             TIMESTAMPDIFF(
               minute, 
               (
                 SELECT MAX(ish1.creation_data) 
-                FROM issue_state_history ish1
+                FROM md2.issue_state_history ish1
                 WHERE ish1.issue_id = ?
                 AND ish1.creation_data NOT IN (
                   SELECT MAX(ish2.creation_data)
-                  FROM issue_state_history ish2
+                  FROM md2.issue_state_history ish2
                 )
               ), 
               (
                 SELECT MAX(ish3.creation_data) 
-                FROM issue_state_history ish3
-                WHERE ish3.issue_id = ?
+                FROM md2.issue_state_history ish3
+                WHERE md2.ish3.issue_id = ?
               )
             )/60
             , 1
@@ -90,7 +90,7 @@ export const IssueQuery = (queryId: IssueQueryId, request: any = {}) => {
 
     case IssueQueryId.updateState:
       query.push(`
-        UPDATE issue
+        UPDATE md2.issue
         SET issue_state = ?
         WHERE issue_id = ?
       `);
@@ -100,7 +100,7 @@ export const IssueQuery = (queryId: IssueQueryId, request: any = {}) => {
 
     case IssueQueryId.deleteIssue:
       query.push(`
-        DELETE FROM issue
+        DELETE FROM md2.issue
         WHERE issue_id = ?
       `);
       queryParams.push(request.issueId);
