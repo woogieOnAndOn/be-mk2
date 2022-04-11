@@ -17,6 +17,9 @@ export class IssueController implements interfaces.Controller {
 
   @httpPost("/issue")
   async insertIssue(@request() request: express.Request, @response() res: express.Response) {
+    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+
     const insertRequest: RequestCreateIssue = request.body;
     console.log('insert issue=========================================');
     console.log(insertRequest);
@@ -27,6 +30,9 @@ export class IssueController implements interfaces.Controller {
 
   @httpGet("/issue")
   async retrieveIssue(@request() request: express.Request, @response() res: express.Response) {
+    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+
     let result: ResponseRetrieveIssue[];
     console.log('retrieve issue=========================================');
     result = await this.issueService.retrieveIssue();
@@ -36,6 +42,9 @@ export class IssueController implements interfaces.Controller {
 
   @httpPut("/issue/:id")
   async updateIssueName(@request() request: express.Request, @response() res: express.Response) {
+    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+
     const updateRequest: RequestUpdateIssueName = request.body;
     updateRequest.issueId = Number(request.params.id);
     console.log('update issueName=========================================');
@@ -47,6 +56,9 @@ export class IssueController implements interfaces.Controller {
 
   @httpPut("/issue/:id/useTime")
   async updateUseTime(@request() request: express.Request, @response() res: express.Response) {
+    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+
     const updateRequest: RequestUpdateIssueUseTime = { issueId: Number(request.params.id) };
     console.log('update use time=========================================');
     console.log(updateRequest);
@@ -57,6 +69,9 @@ export class IssueController implements interfaces.Controller {
 
   @httpPut("/issue/:id/state/:state")
   async updateState(@request() request: express.Request, @response() res: express.Response) {
+    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+
     const updateRequest: RequestUpdateIssueState = {
       issueId: Number(request.params.id),
       issueState: request.params.state,
@@ -70,6 +85,9 @@ export class IssueController implements interfaces.Controller {
 
   @httpDelete("/issue/:id")
   async deleteIssue(@request() request: express.Request, @response() res: express.Response) {
+    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+    
     const deleteRequest: RequestDeleteIssue = { issueId: Number(request.params.id) };
     console.log('delete issue=========================================');
     console.log(deleteRequest);
