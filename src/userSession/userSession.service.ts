@@ -13,7 +13,7 @@ export class UserSessionService {
     @inject('UserSessionRepository') private repository: UserSessionRepository
   ) {}
   
-  async retrieveUserSession<T>(request: UserSession): Promise<T> {
+  async checkValidSession<T>(request: UserSession): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.checkValidSession(request, connection);
     })

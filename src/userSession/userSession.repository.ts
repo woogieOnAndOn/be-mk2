@@ -15,7 +15,7 @@ export class UserSessionRepository extends CommonRepository {
 
   async checkValidSession(request: UserSession, connection?: any): Promise<boolean> {
     const queryInfo: QueryInfo = UserSessionQuery(UserSessionQueryId.checkValidSession, request);
-    const rows = await this.query<object>(queryInfo.query, queryInfo.queryParams, connection);
-    return rows.length > 0 ? true : false;
+    const rows: Array<{ cnt: string }> = await this.query(queryInfo.query, queryInfo.queryParams, connection);
+    return Number(rows[0]['cnt']) > 0 ? true : false;
   }
 }

@@ -23,6 +23,8 @@ import { TreeFileController } from '../tree/treeFile.controller';
 
 import { AWSFileUploader } from '../file/awsFileUploader';
 import { RemoteFileUpload } from '../file/remoteFileUpload';
+import { UserSessionService } from '../userSession/userSession.service';
+import { UserSessionRepository } from '../userSession/userSession.repository';
 
 const container = new Container();
 
@@ -52,6 +54,9 @@ try {
 
     container.bind<AWSFileUploader>("AWSFileUploader").to(AWSFileUploader);
     container.bind<RemoteFileUpload>("RemoteFileUpload").to(RemoteFileUpload);
+
+    container.bind<UserSessionService>('UserSessionService').to(UserSessionService);
+    container.bind<UserSessionRepository>('UserSessionRepository').to(UserSessionRepository);
 
 } catch (error) {
     throw error;
