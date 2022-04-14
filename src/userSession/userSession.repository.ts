@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { CommonRepository } from '../common/common.repository';
 import { QueryInfo } from '../common/common.model';
 import { UserSessionQuery, UserSessionQueryId } from './userSession.query';
-import { UserSession } from './userSession.model';
+import * as userSession from './userSession.model';
 
 @injectable()
 export class UserSessionRepository extends CommonRepository {
@@ -13,9 +13,9 @@ export class UserSessionRepository extends CommonRepository {
     this.init();
   }
 
-  async checkValidSession(request: UserSession, connection?: any): Promise<boolean> {
-    const queryInfo: QueryInfo = UserSessionQuery(UserSessionQueryId.checkValidSession, request);
-    const rows: Array<{ cnt: string }> = await this.query(queryInfo.query, queryInfo.queryParams, connection);
-    return Number(rows[0]['cnt']) > 0 ? true : false;
+  async getUserSession(request: userSession.getRequest, connection?: any): Promise<userSession.getResponse> {
+    const queryInfo: QueryInfo = UserSessionQuery(UserSessionQueryId.getUserSession, request);
+    const rows: Array<userSession.getResponse> = await this.query(queryInfo.query, queryInfo.queryParams, connection);
+    return rows[0];
   }
 }

@@ -5,6 +5,7 @@ import { TreeService } from "./tree.service";
 import { MethodType, ControllerType, TransactionResult } from '../common/common.model';
 import { RequestCreateTree, RequestDeleteTree, RequestUpdateSeqTree, RequestUpdateTree, Tree, TreeSearchCondition } from './tree.model';
 import { CommonController } from "../common/common.controller";
+import * as userSession from '../userSession/userSession.model';
 
 @controller("")
 export class TreeController implements interfaces.Controller {
@@ -21,8 +22,8 @@ export class TreeController implements interfaces.Controller {
 
   @httpPost("/tree")
   async insertTree(@request() request: express.Request, @response() res: express.Response) {
-    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
     const insertRequest: RequestCreateTree = request.body;
     console.log('insert tree=========================================');
@@ -35,8 +36,8 @@ export class TreeController implements interfaces.Controller {
     
   @httpGet("/tree")
   async retrieveTree(@request() request: express.Request, @response() res: express.Response) {
-    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
     const searchRequest: TreeSearchCondition = {
       parent: request.query.parent ? Number(request.query.parent) : 0,
@@ -51,8 +52,8 @@ export class TreeController implements interfaces.Controller {
 
   @httpPut("/tree/:id")
   async updateTree(@request() request: express.Request, @response() res: express.Response) {
-    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
     const updateRequest: RequestUpdateTree = request.body;
     updateRequest.id = Number(request.params.id);
@@ -66,8 +67,8 @@ export class TreeController implements interfaces.Controller {
 
   @httpDelete("/tree/:id")
   async deleteTree(@request() request: express.Request, @response() res: express.Response) {
-    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
     const deleteRequest: RequestDeleteTree = request.body;
     deleteRequest.id = Number(request.params.id);
@@ -80,8 +81,8 @@ export class TreeController implements interfaces.Controller {
 
   @httpPut("/tree/:id/seq")
   async updateSeqTree(@request() request: express.Request, @response() res: express.Response) {
-    const vaildSession = await this.commonController.checkValidSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!vaildSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
+    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
     
     const updateSeqRequest: RequestUpdateSeqTree = request.body;
     updateSeqRequest.id = Number(request.params.id);

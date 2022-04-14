@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { UserSession } from '../userSession/userSession.model';
+import * as userSession from '../userSession/userSession.model';
 import { UserSessionService } from '../userSession/userSession.service';
 import { Message, MethodType, ControllerType, TransactionResult } from "./common.model";
 
@@ -9,8 +9,8 @@ export class CommonController {
     @inject('UserSessionService') private userSessionService: UserSessionService
   ) {}
 
-  async checkValidSession<T>(request: UserSession): Promise<T> {
-    return await this.userSessionService.checkValidSession(request);
+  async getUserSession(request: userSession.getRequest): Promise<userSession.getResponse> {
+    return await this.userSessionService.getUserSession(request);
   }
 
   createReturnMessage(controllerType: ControllerType , result: TransactionResult | any, request: any, methodType: MethodType, methodDetail?: string) {

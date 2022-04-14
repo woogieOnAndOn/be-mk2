@@ -3,7 +3,7 @@ import { CommonService } from '../common/common.service';
 import { PoolConnection } from 'mysql2/promise';
 import { UserSessionRepository } from './userSession.repository';
 import { DBConnectionFactory } from '../utils/dbConnectionFactory.util';
-import { UserSession } from './userSession.model';
+import * as userSession from './userSession.model';
 
 @injectable()
 export class UserSessionService {
@@ -13,9 +13,9 @@ export class UserSessionService {
     @inject('UserSessionRepository') private repository: UserSessionRepository
   ) {}
   
-  async checkValidSession<T>(request: UserSession): Promise<T> {
+  async getUserSession(request: userSession.getRequest): Promise<userSession.getResponse> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      return await this.repository.checkValidSession(request, connection);
+      return await this.repository.getUserSession(request, connection);
     })
   }
 }

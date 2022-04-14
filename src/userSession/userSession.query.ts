@@ -1,7 +1,7 @@
 import { QueryInfo } from '../common/common.model';
 
 export enum UserSessionQueryId {
-  checkValidSession
+  getUserSession
 }
 
 export const UserSessionQuery = (queryId: UserSessionQueryId, request: any = {}) => {
@@ -13,9 +13,12 @@ export const UserSessionQuery = (queryId: UserSessionQueryId, request: any = {})
   const queryParams: any[] = [];
 
   switch(queryId) {
-    case UserSessionQueryId.checkValidSession:
+    case UserSessionQueryId.getUserSession:
       query.push(`
-        SELECT COUNT(*) AS cnt
+        SELECT
+          user_id AS userId
+          ,user_name AS userName
+          ,session_id AS sessionId
         FROM auth.user_session
         WHERE session_id = ?
       `);
