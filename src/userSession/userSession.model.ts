@@ -3,7 +3,7 @@ export interface getRequest {
 }
 
 export interface getResponse {
-  userId?: string;
-  userName?: string;
+  userId: string;
+  userName: string;
   sessionId: string;
 }

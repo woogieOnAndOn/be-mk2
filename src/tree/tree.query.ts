@@ -32,17 +32,21 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           depth,
           parent,
           secret,
-          seq
+          seq,
+          user
         )
         VALUES
         (?, ?, ?, ?, ?, ?,
           (
             SELECT IFNULL(MAX(tr.seq), 0) + 1
-            FROM tree tr
+            FROM md2.tree tr
             WHERE tr.depth = ?
             AND tr.type = ?
             AND tr.parent = ?
-          )
+            AND tr.user = ?
+            AND tr.delete_yn = 'N'
+          ),
+          ?
         )                  
       `);
       queryParams.push(request.type);
@@ -55,9 +59,9 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
       queryParams.push(request.depth);
       queryParams.push(request.type);
       queryParams.push(request.parent);
-      break;
+      queryParams.push(request.user);
 
-    case TreeQueryId.selectTree:
+      queryParams.push(request.user);
       break;
 
     case TreeQueryId.updateTree:
@@ -98,9 +102,11 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           NULL AS children
         FROM md2.tree tr
         WHERE tr.parent = ?
+        AND tr.user = ?
         AND tr.delete_yn = 'N'
       `);
       queryParams.push(request.parent);
+      queryParams.push(request.user);
 
       if (request.secret === 0) {
         query.push(`AND tr.secret = 0`);
@@ -140,7 +146,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
               RANK() OVER(ORDER BY t.seq) AS 'num'
               ,t.id
               ,t.seq
-            FROM tree t
+            FROM md2.tree t
             WHERE t.depth = ?
             AND t.parent = ?
             AND t.type = ?
@@ -150,7 +156,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
             SELECT 
               RANK() OVER(ORDER BY t.seq) AS 'num'
               ,t.id
-            FROM tree t
+            FROM md2.tree t
             WHERE t.depth = ?
             AND t.parent = ?
             AND t.type = ?

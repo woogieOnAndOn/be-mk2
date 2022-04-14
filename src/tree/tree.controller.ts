@@ -26,9 +26,10 @@ export class TreeController implements interfaces.Controller {
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
     const insertRequest: RequestCreateTree = request.body;
+    insertRequest.user = userSession.userName;
     console.log('insert tree=========================================');
     const result: TransactionResult = await this.treeService.insertTree(insertRequest);
-    const insertedTree: Tree = await this.treeService.getTree({ id: result.insertId });
+    const insertedTree: Tree = await this.treeService.getTree({ id: result.insertId, user: userSession.userName });
     console.log(insertedTree);
     
     return this.commonController.createReturnMessage(ControllerType.TREE, result, insertedTree, MethodType.CREATE);
@@ -42,6 +43,7 @@ export class TreeController implements interfaces.Controller {
     const searchRequest: TreeSearchCondition = {
       parent: request.query.parent ? Number(request.query.parent) : 0,
       secret: request.query.secret ? Number(request.query.secret) : 0,
+      user: userSession.userName,
     };
     console.log('retrieve tree=========================================');
     console.log(searchRequest);
@@ -59,7 +61,7 @@ export class TreeController implements interfaces.Controller {
     updateRequest.id = Number(request.params.id);
     console.log('update tree=========================================');
     const result: TransactionResult = await this.treeService.updateTree(updateRequest);
-    const updatedTree: Tree = await this.treeService.getTree({ id: updateRequest.id });
+    const updatedTree: Tree = await this.treeService.getTree({ id: updateRequest.id, user: userSession.userName });
     console.log(updatedTree);
     
     return this.commonController.createReturnMessage(ControllerType.TREE, result, updatedTree, MethodType.UPDATE);
