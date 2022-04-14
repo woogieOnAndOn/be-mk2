@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { CommonRepository } from '../common/common.repository';
 import { QueryInfo } from '../common/common.model';
 import { IssueQuery, IssueQueryId } from './issue.query';
-import { RequestCreateIssue, RequestUpdateIssueName, RequestUpdateIssueUseTime, RequestUpdateIssueState, RequestDeleteIssue } from './issue.model';
+import { RequestCreateIssue, RequestUpdateIssueName, RequestUpdateIssueUseTime, RequestUpdateIssueState, RequestDeleteIssue, RequestRetrieveIssue } from './issue.model';
 import mysql from 'mysql2';
 
 @injectable()
@@ -19,8 +19,8 @@ export class IssueRepository extends CommonRepository {
     return await this.insertByObj<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 
-  async retrieveIssue<T>(connection?: any): Promise<T[]> {
-    const queryInfo: QueryInfo = IssueQuery(IssueQueryId.retrieveIssue);
+  async retrieveIssue<T>(request: RequestRetrieveIssue, connection?: any): Promise<T[]> {
+    const queryInfo: QueryInfo = IssueQuery(IssueQueryId.retrieveIssue, request);
     return await this.query<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 

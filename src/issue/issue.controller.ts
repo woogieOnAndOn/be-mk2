@@ -22,6 +22,7 @@ export class IssueController implements interfaces.Controller {
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
     const insertRequest: RequestCreateIssue = request.body;
+    insertRequest.user = userSession.userName;
     console.log('insert issue=========================================');
     console.log(insertRequest);
     const result: TransactionResult = await this.issueService.insertIssue(insertRequest);
@@ -36,7 +37,7 @@ export class IssueController implements interfaces.Controller {
 
     let result: ResponseRetrieveIssue[];
     console.log('retrieve issue=========================================');
-    result = await this.issueService.retrieveIssue();
+    result = await this.issueService.retrieveIssue({ user: userSession.userName });
 
     return this.commonController.createReturnMessage(ControllerType.ISSUE, result, null, MethodType.READ);
   }

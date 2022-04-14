@@ -23,15 +23,18 @@ export const IssueQuery = (queryId: IssueQueryId, request: any = {}) => {
         INSERT INTO md2.issue
           (
             issue_name, 
-            creation_date
+            creation_date,
+            user
           )
         VALUES
           (
             ?, 
-            now()
+            now(),
+            ?
           )
       `);
       queryParams.push(request.issueName);
+      queryParams.push(request.user);
       break;
 
     case IssueQueryId.retrieveIssue:
@@ -43,7 +46,9 @@ export const IssueQuery = (queryId: IssueQueryId, request: any = {}) => {
           use_time AS useTime, 
           creation_date AS creationDate
         FROM md2.issue
+        WHERE user = ?
       `);
+      queryParams.push(request.user);
       break;
 
     case IssueQueryId.updateIssueName:

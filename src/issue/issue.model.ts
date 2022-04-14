@@ -4,10 +4,12 @@ export interface Issue {
   issueState: string;
   useTime: number;
   creationDate: string;
+  user: string;
 }
 
 export interface RequestCreateIssue {
   issueName: string;
+  user: string;
 }
 
 export interface RequestUpdateIssueName {
@@ -26,6 +28,10 @@ export interface RequestUpdateIssueState {
 
 export interface RequestDeleteIssue {
   issueId: number;
+}
+
+export interface RequestRetrieveIssue {
+  user: string;
 }
 
 export interface ResponseRetrieveIssue {

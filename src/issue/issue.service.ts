@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { CommonService } from '../common/common.service';
 import { IssueRepository } from './issue.repository';
-import { RequestCreateIssue, RequestUpdateIssueName, RequestUpdateIssueUseTime, RequestUpdateIssueState, RequestDeleteIssue, IssueState } from './issue.model';
+import { RequestCreateIssue, RequestUpdateIssueName, RequestUpdateIssueUseTime, RequestUpdateIssueState, RequestDeleteIssue, IssueState, RequestRetrieveIssue } from './issue.model';
 import { TransactionResult } from '../common/common.model';
 import { DBConnectionFactory } from '../utils/dbConnectionFactory.util';
 import { IssueStateHistoryRepository } from './issueStateHistory.repository';
@@ -23,9 +23,9 @@ export class IssueService {
     });
   }
 
-  async retrieveIssue<T>(): Promise<T[]> {
+  async retrieveIssue<T>(request: RequestRetrieveIssue): Promise<T[]> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      return await this.repository.retrieveIssue(connection);
+      return await this.repository.retrieveIssue(request, connection);
     });
   }
 
