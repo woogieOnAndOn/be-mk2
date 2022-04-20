@@ -31,6 +31,10 @@ export interface RequestRetrieveIssueCheck {
   issueId: number;
 }
 
+export interface RequestRetrieveAllIssueCheck {
+  user: string;
+}
+
 export interface ResponseRetrieveIssueCheck {
   issueId: number;
   checkId: number;

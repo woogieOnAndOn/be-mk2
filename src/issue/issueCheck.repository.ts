@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { CommonRepository } from '../common/common.repository';
 import { QueryInfo } from '../common/common.model';
 import { IssueCheckQuery, IssueCheckQueryId } from './issueCheck.query';
-import { RequestCreateIssueCheck, RequestRetrieveIssueCheck, RequestUpdateIssueCheckName, RequestUpdateIssueCheckCompleteYn, RequestDeleteIssueCheck } from './issueCheck.model';
+import { RequestCreateIssueCheck, RequestRetrieveIssueCheck, RequestUpdateIssueCheckName, RequestUpdateIssueCheckCompleteYn, RequestDeleteIssueCheck, RequestRetrieveAllIssueCheck } from './issueCheck.model';
 import mysql from 'mysql2';
 
 @injectable()
@@ -37,5 +37,10 @@ export class IssueCheckRepository extends CommonRepository {
   async deleteIssueCheck<T>(request: RequestDeleteIssueCheck, connection?: any): Promise<T> {
     const queryInfo: QueryInfo = IssueCheckQuery(IssueCheckQueryId.deleteIssueCheck, request);
     return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
+  }
+
+  async retrieveAllIssueCheck<T>(request: RequestRetrieveAllIssueCheck, connection?: any): Promise<T[]> {
+    const queryInfo: QueryInfo = IssueCheckQuery(IssueCheckQueryId.retrieveAllIssueCheck, request);
+    return await this.query<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 }

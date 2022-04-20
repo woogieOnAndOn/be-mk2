@@ -6,6 +6,7 @@ export enum IssueCheckQueryId {
   updateIssueCheckName,
   updateIssueCheckCompleteYn,
   deleteIssueCheck,
+  retrieveAllIssueCheck,
 }
 
 export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) => {
@@ -90,6 +91,18 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
       queryParams.push(request.issueId);
       queryParams.push(request.checkId);
       break;
+
+    case IssueCheckQueryId.retrieveAllIssueCheck:
+      query.push(`
+        SELECT 
+          issue_id AS issueId, 
+          check_id AS checkId, 
+          check_name AS checkName, 
+          complete_yn AS completeYn, 
+          creation_date AS creationDate
+        FROM md2.issue_check
+      `);
+      break;      
 
     default:
       break;

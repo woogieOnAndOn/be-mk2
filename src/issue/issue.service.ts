@@ -1,12 +1,13 @@
 import { inject, injectable } from 'inversify';
 import { CommonService } from '../common/common.service';
 import { IssueRepository } from './issue.repository';
-import { RequestCreateIssue, RequestUpdateIssueName, RequestUpdateIssueUseTime, RequestUpdateIssueState, RequestDeleteIssue, IssueState, RequestRetrieveIssue } from './issue.model';
+import { RequestCreateIssue, RequestUpdateIssueName, RequestUpdateIssueUseTime, RequestUpdateIssueState, RequestDeleteIssue, IssueState, RequestRetrieveIssue, ResponseRetrieveIssue } from './issue.model';
 import { TransactionResult } from '../common/common.model';
 import { DBConnectionFactory } from '../utils/dbConnectionFactory.util';
 import { IssueStateHistoryRepository } from './issueStateHistory.repository';
-import { RequestCreateIssueStateHistory } from './issueStateHistory.model';
 import { PoolConnection } from 'mysql2/promise';
+import { ResponseRetrieveIssueCheck } from './issueCheck.model';
+import { IssueCheckRepository } from './issueCheck.repository';
 
 @injectable()
 export class IssueService {
@@ -15,6 +16,7 @@ export class IssueService {
     @inject('CommonService') protected commonService: CommonService,
     @inject('IssueRepository') private repository: IssueRepository,
     @inject('IssueStateHistoryRepository') private issueStateHistoryRepository: IssueStateHistoryRepository,
+    @inject('IssueCheckRepository') private issueCheckRepository: IssueCheckRepository,
   ) {}
 
   async insertIssue<T>(request: RequestCreateIssue): Promise<T> {
@@ -25,7 +27,17 @@ export class IssueService {
 
   async retrieveIssue<T>(request: RequestRetrieveIssue): Promise<T[]> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      return await this.repository.retrieveIssue(request, connection);
+      const issues: ResponseRetrieveIssue[] = await this.repository.retrieveIssue(request, connection);
+      const allIssueChecks: ResponseRetrieveIssueCheck[] = await this.issueCheckRepository.retrieveAllIssueCheck(request, connection);
+
+      issues.forEach((issue, index) => {
+        const issueChecks = allIssueChecks.filter((issueCheck) => {
+          return issueCheck.issueId === issue.issueId;
+        });
+        issue.issueChecks = issueChecks;
+      });
+
+      return issues;
     });
   }
 
