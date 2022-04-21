@@ -57,6 +57,7 @@ export class CommonRepository {
           connection = await this.mysqlPool.getConnection();
       }
 
+      await connection.query('SET AUTOCOMMIT = FALSE;');
       const [rows, fields] = await connection.execute(queryStr, parameters);
       result = rows as T;
       if(!conn) {
@@ -90,6 +91,7 @@ export class CommonRepository {
           connection = await this.mysqlPool.getConnection();
       }
 
+      await connection.query('SET AUTOCOMMIT = FALSE;');
       const [rows, fields] = await connection.query(queryStr, paramObj);
       result = rows as T;
       if(!conn) {
@@ -120,6 +122,8 @@ export class CommonRepository {
       } else {
         connection = await this.mysqlPool.getConnection();
       }
+
+      await connection.query('SET AUTOCOMMIT = FALSE;');
       const [rows, fields] = await connection.query(queries);
       result = rows;
       if (!conn) {
