@@ -4,6 +4,7 @@ import { IssueCheckRepository } from './issueCheck.repository';
 import * as IssueCheck from './issueCheck.model';
 import { DBConnectionFactory } from '../utils/dbConnectionFactory.util';
 import { PoolConnection } from 'mysql2/promise';
+import { TransactionResult } from '../common/common.model';
 
 @injectable()
 export class IssueCheckService {
@@ -13,10 +14,14 @@ export class IssueCheckService {
     @inject('IssueCheckRepository') private repository: IssueCheckRepository,
   ) {}
 
-  async insertIssueCheck<T>(request: IssueCheck.CreateReq[]): Promise<T> {
+  async insertIssueCheck<T>(request: IssueCheck.CreateReq[], existingConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      return await this.repository.insertIssueCheck(request, connection);
-    });
+      const insertIssueCheckResult: TransactionResult = await this.repository.insertIssueCheck(request, connection);
+      if (insertIssueCheckResult.affectedRows !== request.length) {
+        throw new Error;
+      }
+      return insertIssueCheckResult;
+    }, existingConnection);
   }
 
   async retrieveIssueCheck<T>(request: IssueCheck.RetrieveReq): Promise<T[]> {
@@ -25,10 +30,16 @@ export class IssueCheckService {
     });
   }
 
-  async updateIssueCheck<T>(request: IssueCheck.UpdateReq[]): Promise<T> {
+  async updateIssueCheck<T>(request: IssueCheck.UpdateReq[], existingConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      return await this.repository.updateIssueCheck(request, connection);
-    });
+      const updateIssueCheckResult: TransactionResult[] = await this.repository.updateIssueCheck(request, connection);
+      updateIssueCheckResult.forEach((result: TransactionResult, index: number) => {
+        if (result.affectedRows !== 1) {
+          throw new Error;
+        }
+      });
+      return updateIssueCheckResult;
+    }, existingConnection);
   }
 
   async updateIssueCheckCompleteYn<T>(request: IssueCheck.UpdateCompleteYnReq): Promise<T> {
@@ -37,10 +48,10 @@ export class IssueCheckService {
     });
   }
 
-  async deleteIssueCheck<T>(request: IssueCheck.DeleteReq[]): Promise<T> {
+  async deleteIssueCheck<T>(request: IssueCheck.DeleteReq[], existingConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.deleteIssueCheck(request, connection);
-    });
+    }, existingConnection);
   }
 
   async retrieveAllIssueCheck<T>(request: IssueCheck.RetrieveAllReq): Promise<T[]> {

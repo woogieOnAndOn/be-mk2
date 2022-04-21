@@ -56,7 +56,7 @@ export const IssueQuery = (queryId: IssueQueryId, request: any = {}) => {
         UPDATE md2.issue
         SET 
           issue_name = ?
-          ,issue_use_time = ?
+          ,use_time = ?
         WHERE issue_id = ?
       `);
       queryParams.push(request.issueName);

@@ -28,20 +28,27 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
             creation_date
           )
         VALUES
-          (
-            ?, 
-            (
-              SELECT IFNULL(MAX(ic.check_id), 0) + 1 
-              FROM md2.issue_check ic
-              WHERE ic.issue_id = ?
-            ), 
-            ?, 
-            now()
-          )
       `);
-      queryParams.push(request.issueId);
-      queryParams.push(request.issueId);
-      queryParams.push(request.checkName);
+
+      request.forEach((req: any, index: number) => {
+        query.push(`
+            (
+              ?, 
+              (
+                SELECT IFNULL(MAX(ic.check_id), 0) + 1 
+                FROM md2.issue_check ic
+                WHERE ic.issue_id = ?
+              ), 
+              ?, 
+              now()
+            )
+        `);
+        queryParams.push(req.issueId);
+        queryParams.push(req.issueId);
+        queryParams.push(req.checkName);
+
+        if (index+1 !== request.length) query.push(`,`);
+      });
       break;
 
     case IssueCheckQueryId.retrieveIssueCheck:
@@ -86,10 +93,18 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
         DELETE 
         FROM md2.issue_check
         WHERE issue_id = ? 
-        AND check_id = ?
+        AND check_id IN (
       `);
       queryParams.push(request.issueId);
-      queryParams.push(request.checkId);
+
+      request.forEach((req: any, index: number) => {
+        query.push(` ? `);
+        queryParams.push(req.checkId);
+
+        if (index+1 !== request.length) query.push(`,`);
+      });
+
+      query.push(` ) `)
       break;
 
     case IssueCheckQueryId.retrieveAllIssueCheck:

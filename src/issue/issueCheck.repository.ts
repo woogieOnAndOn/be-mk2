@@ -3,6 +3,7 @@ import { CommonRepository } from '../common/common.repository';
 import { QueryInfo } from '../common/common.model';
 import { IssueCheckQuery, IssueCheckQueryId } from './issueCheck.query';
 import * as IssueCheck from './issueCheck.model';
+import mysql from 'mysql2';
 
 @injectable()
 export class IssueCheckRepository extends CommonRepository {
@@ -24,8 +25,14 @@ export class IssueCheckRepository extends CommonRepository {
   }
 
   async updateIssueCheck<T>(request: IssueCheck.UpdateReq[], connection?: any): Promise<T> {
-    const queryInfo: QueryInfo = IssueCheckQuery(IssueCheckQueryId.updateIssueCheck, request);
-    return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
+    let queries = '';
+
+    request.forEach((req: IssueCheck.UpdateReq, index: number) => {
+      const queryInfo: QueryInfo = IssueCheckQuery(IssueCheckQueryId.updateIssueCheck, req);
+      queries += mysql.format(queryInfo.query, queryInfo.queryParams) + '; ';
+    });
+
+    return await this.multiQuery(queries);
   }
 
   async updateIssueCheckCompleteYn<T>(request: IssueCheck.UpdateCompleteYnReq, connection?: any): Promise<T> {

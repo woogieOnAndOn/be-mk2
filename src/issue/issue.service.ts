@@ -46,9 +46,11 @@ export class IssueService {
   async updateIssue<T>(request: Issue.UpdateReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       const updateIssueResult: TransactionResult =  await this.repository.updateIssue(request, connection);
-      await this.issueCheckService.insertIssueCheck(request.newIssueChecks);
-      await this.issueCheckService.updateIssueCheck(request.editIssueChecks);
-      await this.issueCheckService.deleteIssueCheck(request.deleteIssueChecks);
+
+      if (request.newIssueChecks.length) await this.issueCheckService.insertIssueCheck(request.newIssueChecks, connection);
+      if (request.editIssueChecks.length) await this.issueCheckService.updateIssueCheck(request.editIssueChecks, connection);
+      if (request.deleteIssueChecks.length) await this.issueCheckService.deleteIssueCheck(request.deleteIssueChecks, connection);
+
       return updateIssueResult;
     });
   }
