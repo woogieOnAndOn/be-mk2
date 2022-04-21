@@ -14,26 +14,26 @@ export class TreeService {
     @inject('TreeRepository') private repository: TreeRepository
   ) {}
 
-  async insertTree<T>(request: Tree.CreateReq): Promise<T> {
+  async insertTree<T>(request: Tree.CreateReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
         return await this.repository.insertTree(request, connection)
-    })
+    }, inputConnection)
   }
 
   
-  async retrieveTree<T>(request: Tree.RetrieveReq): Promise<T> {
+  async retrieveTree<T>(request: Tree.RetrieveReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.retrieveTree(request, connection);
-    })
+    }, inputConnection)
   }
 
-  async updateTree<T>(request: Tree.UpdateReq): Promise<T> {
+  async updateTree<T>(request: Tree.UpdateReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.updateTree(request, connection);
-    })
+    }, inputConnection)
   }
 
-  async deleteTree<T>(request: Tree.DeleteReq): Promise<T> {
+  async deleteTree<T>(request: Tree.DeleteReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       const deleteTargetMinus = [];
       const deleteTargetPlus = [];
@@ -55,10 +55,10 @@ export class TreeService {
 
       const finalRequest =  deleteTargetPlus.toString();
       return await this.repository.deleteTree(finalRequest);
-    });
+    }, inputConnection);
   }
 
-  async updateSeqTree<T>(request: Tree.UpdateSeqReq): Promise<T> {
+  async updateSeqTree<T>(request: Tree.UpdateSeqReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       const result: TransactionResult = await this.repository.updateSeqSurroundingTree(request, connection);
       if (result.affectedRows === 1) {
@@ -66,12 +66,12 @@ export class TreeService {
       } else {
         throw new Error;
       }
-    })
+    }, inputConnection)
   }
 
-  async getTree<T>(request: Tree.GetReq): Promise<T> {
+  async getTree<T>(request: Tree.GetReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.getTree(request, connection);
-    })
+    }, inputConnection)
   }
 }

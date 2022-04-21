@@ -21,13 +21,13 @@ export class IssueService {
     @inject('IssueCheckRepository') private issueCheckRepository: IssueCheckRepository,
   ) {}
 
-  async insertIssue<T>(request: Issue.CreateReq): Promise<T> {
+  async insertIssue<T>(request: Issue.CreateReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.insertIssue(request, connection);
-    });
+    }, inputConnection);
   }
 
-  async retrieveIssue<T>(request: Issue.RetrieveReq): Promise<T[]> {
+  async retrieveIssue<T>(request: Issue.RetrieveReq, inputConnection?: PoolConnection): Promise<T[]> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       const issues: Issue.RetrieveRes[] = await this.repository.retrieveIssue(request, connection);
       const allIssueChecks: IssueCheck.RetrieveRes[] = await this.issueCheckRepository.retrieveAllIssueCheck(request, connection);
@@ -40,10 +40,10 @@ export class IssueService {
       });
 
       return issues;
-    });
+    }, inputConnection);
   }
 
-  async updateIssue<T>(request: Issue.UpdateReq): Promise<T> {
+  async updateIssue<T>(request: Issue.UpdateReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       const updateIssueResult: TransactionResult =  await this.repository.updateIssue(request, connection);
 
@@ -52,16 +52,16 @@ export class IssueService {
       if (request.deleteIssueChecks.length) await this.issueCheckService.deleteIssueCheck(request.deleteIssueChecks, connection);
 
       return updateIssueResult;
-    });
+    }, inputConnection);
   }
 
-  async updateUseTime<T>(request: Issue.UpdateUseTimeReq): Promise<T> {
+  async updateUseTime<T>(request: Issue.UpdateUseTimeReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.updateUseTime(request, connection);
-    });
+    }, inputConnection);
   }
 
-  async updateState<T>(request: Issue.UpdateStateReq): Promise<T> {
+  async updateState<T>(request: Issue.UpdateStateReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       let result;
       
@@ -73,13 +73,13 @@ export class IssueService {
       
       result = historyResult;
       return result;
-    });
+    }, inputConnection);
   }
 
-  async deleteIssue<T>(request: Issue.DeleteReq): Promise<T> {
+  async deleteIssue<T>(request: Issue.DeleteReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.deleteIssue(request, connection);
-    });
+    }, inputConnection);
   }
 
 }
