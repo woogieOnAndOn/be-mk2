@@ -1,12 +1,12 @@
 import { inject, injectable } from 'inversify';
 import { CommonService } from '../common/common.service';
 import { IssueRepository } from './issue.repository';
-import { RequestCreateIssue, RequestUpdateIssueName, RequestUpdateIssueUseTime, RequestUpdateIssueState, RequestDeleteIssue, IssueState, RequestRetrieveIssue, ResponseRetrieveIssue } from './issue.model';
+import * as Issue from './issue.model';
 import { TransactionResult } from '../common/common.model';
 import { DBConnectionFactory } from '../utils/dbConnectionFactory.util';
 import { IssueStateHistoryRepository } from './issueStateHistory.repository';
 import { PoolConnection } from 'mysql2/promise';
-import { ResponseRetrieveIssueCheck } from './issueCheck.model';
+import * as IssueCheck from './issueCheck.model';
 import { IssueCheckRepository } from './issueCheck.repository';
 
 @injectable()
@@ -19,16 +19,16 @@ export class IssueService {
     @inject('IssueCheckRepository') private issueCheckRepository: IssueCheckRepository,
   ) {}
 
-  async insertIssue<T>(request: RequestCreateIssue): Promise<T> {
+  async insertIssue<T>(request: Issue.CreateReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.insertIssue(request, connection);
     });
   }
 
-  async retrieveIssue<T>(request: RequestRetrieveIssue): Promise<T[]> {
+  async retrieveIssue<T>(request: Issue.RetrieveReq): Promise<T[]> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      const issues: ResponseRetrieveIssue[] = await this.repository.retrieveIssue(request, connection);
-      const allIssueChecks: ResponseRetrieveIssueCheck[] = await this.issueCheckRepository.retrieveAllIssueCheck(request, connection);
+      const issues: Issue.RetrieveRes[] = await this.repository.retrieveIssue(request, connection);
+      const allIssueChecks: IssueCheck.RetrieveRes[] = await this.issueCheckRepository.retrieveAllIssueCheck(request, connection);
 
       issues.forEach((issue, index) => {
         const issueChecks = allIssueChecks.filter((issueCheck) => {
@@ -41,19 +41,19 @@ export class IssueService {
     });
   }
 
-  async updateIssueName<T>(request: RequestUpdateIssueName): Promise<T> {
+  async updateIssueName<T>(request: Issue.UpdateReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.updateIssueName(request, connection);
     });
   }
 
-  async updateUseTime<T>(request: RequestUpdateIssueUseTime): Promise<T> {
+  async updateUseTime<T>(request: Issue.UpdateUseTimeReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.updateUseTime(request, connection);
     });
   }
 
-  async updateState<T>(request: RequestUpdateIssueState): Promise<T> {
+  async updateState<T>(request: Issue.UpdateStateReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       let result;
       
@@ -68,7 +68,7 @@ export class IssueService {
     });
   }
 
-  async deleteIssue<T>(request: RequestDeleteIssue): Promise<T> {
+  async deleteIssue<T>(request: Issue.DeleteReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.deleteIssue(request, connection);
     });

@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { CommonService } from '../common/common.service';
 import { IssueCheckRepository } from './issueCheck.repository';
-import { RequestCreateIssueCheck, RequestRetrieveIssueCheck, RequestUpdateIssueCheckName, RequestUpdateIssueCheckCompleteYn, RequestDeleteIssueCheck, RequestRetrieveAllIssueCheck } from './issueCheck.model';
+import * as IssueCheck from './issueCheck.model';
 import { DBConnectionFactory } from '../utils/dbConnectionFactory.util';
 import { PoolConnection } from 'mysql2/promise';
 
@@ -13,37 +13,37 @@ export class IssueCheckService {
     @inject('IssueCheckRepository') private repository: IssueCheckRepository,
   ) {}
 
-  async insertIssueCheck<T>(request: RequestCreateIssueCheck): Promise<T> {
+  async insertIssueCheck<T>(request: IssueCheck.CreateReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.insertIssueCheck(request, connection);
     });
   }
 
-  async retrieveIssueCheck<T>(request: RequestRetrieveIssueCheck): Promise<T[]> {
+  async retrieveIssueCheck<T>(request: IssueCheck.RetrieveReq): Promise<T[]> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.retrieveIssueCheck(request, connection);
     });
   }
 
-  async updateIssueCheckName<T>(request: RequestUpdateIssueCheckName): Promise<T> {
+  async updateIssueCheckName<T>(request: IssueCheck.UpdateNameReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.updateIssueCheckName(request, connection);
     });
   }
 
-  async updateIssueCheckCompleteYn<T>(request: RequestUpdateIssueCheckCompleteYn): Promise<T> {
+  async updateIssueCheckCompleteYn<T>(request: IssueCheck.UpdateCompleteYnReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.updateIssueCheckCompleteYn(request, connection);
     });
   }
 
-  async deleteIssueCheck<T>(request: RequestDeleteIssueCheck): Promise<T> {
+  async deleteIssueCheck<T>(request: IssueCheck.DeleteReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.deleteIssueCheck(request, connection);
     });
   }
 
-  async retrieveAllIssueCheck<T>(request: RequestRetrieveAllIssueCheck): Promise<T[]> {
+  async retrieveAllIssueCheck<T>(request: IssueCheck.RetrieveAllReq): Promise<T[]> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.retrieveAllIssueCheck(request, connection);
     });

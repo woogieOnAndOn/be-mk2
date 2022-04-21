@@ -2,10 +2,10 @@ import * as express from "express";
 import { interfaces, controller, httpGet, httpPost, httpDelete, request, queryParam, response, requestParam, httpPut } from "inversify-express-utils";
 import { inject } from "inversify";
 import { IssueService } from "./issue.service";
-import { RequestCreateIssue, RequestUpdateIssueName, RequestUpdateIssueUseTime, RequestUpdateIssueState, RequestDeleteIssue, ResponseRetrieveIssue } from './issue.model';
+import * as Issue from './issue.model';
 import { ControllerType, MethodType, TransactionResult } from "../common/common.model";
 import { CommonController } from "../common/common.controller";
-import { RequestCreateIssueStateHistory } from "./issueStateHistory.model";
+import * as IssueStateHistory from "./issueStateHistory.model";
 import * as userSession from '../userSession/userSession.model';
 
 @controller("")
@@ -21,7 +21,7 @@ export class IssueController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
-    const insertRequest: RequestCreateIssue = request.body;
+    const insertRequest: Issue.CreateReq = request.body;
     insertRequest.user = userSession.userName;
     console.log('insert issue=========================================');
     console.log(insertRequest);
@@ -35,7 +35,7 @@ export class IssueController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
-    let result: ResponseRetrieveIssue[];
+    let result: Issue.RetrieveRes[];
     console.log('retrieve issue=========================================');
     result = await this.issueService.retrieveIssue({ user: userSession.userName });
 
@@ -47,7 +47,7 @@ export class IssueController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
-    const updateRequest: RequestUpdateIssueName = request.body;
+    const updateRequest: Issue.UpdateReq = request.body;
     updateRequest.issueId = Number(request.params.id);
     console.log('update issueName=========================================');
     console.log(updateRequest);
@@ -61,7 +61,7 @@ export class IssueController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
-    const updateRequest: RequestUpdateIssueUseTime = { issueId: Number(request.params.id) };
+    const updateRequest: Issue.UpdateUseTimeReq = { issueId: Number(request.params.id) };
     console.log('update use time=========================================');
     console.log(updateRequest);
     const result: TransactionResult = await this.issueService.updateUseTime(updateRequest);
@@ -74,7 +74,7 @@ export class IssueController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
-    const updateRequest: RequestUpdateIssueState = {
+    const updateRequest: Issue.UpdateStateReq = {
       issueId: Number(request.params.id),
       issueState: request.params.state,
     };
@@ -90,7 +90,7 @@ export class IssueController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
     
-    const deleteRequest: RequestDeleteIssue = { issueId: Number(request.params.id) };
+    const deleteRequest: Issue.DeleteReq = { issueId: Number(request.params.id) };
     console.log('delete issue=========================================');
     console.log(deleteRequest);
     const result: TransactionResult = await this.issueService.deleteIssue(deleteRequest);

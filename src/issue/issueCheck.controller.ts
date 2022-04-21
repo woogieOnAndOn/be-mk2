@@ -2,7 +2,7 @@ import * as express from "express";
 import { interfaces, controller, httpGet, httpPost, httpDelete, request, queryParam, response, requestParam, httpPut } from "inversify-express-utils";
 import { inject } from "inversify";
 import { IssueCheckService } from "./issueCheck.service";
-import { RequestCreateIssueCheck, RequestRetrieveIssueCheck, RequestUpdateIssueCheckName, RequestUpdateIssueCheckCompleteYn, RequestDeleteIssueCheck, ResponseRetrieveIssueCheck } from './issueCheck.model';
+import * as IssueCheck from './issueCheck.model';
 import { ControllerType, MethodType, TransactionResult } from "../common/common.model";
 import { CommonController } from "../common/common.controller";
 
@@ -16,7 +16,7 @@ export class IssueCheckController implements interfaces.Controller {
 
   @httpPost("/issue/:id/issueCheck")
   async insertIssueCheck(@request() request: express.Request, @response() res: express.Response) {
-    const insertRequest: RequestCreateIssueCheck = request.body;
+    const insertRequest: IssueCheck.CreateReq = request.body;
     insertRequest.issueId = Number(request.params.id);
     console.log('insert issueCheck=========================================');
     console.log(insertRequest);
@@ -27,8 +27,8 @@ export class IssueCheckController implements interfaces.Controller {
 
   @httpGet("/issue/:id/issueCheck")
   async retrieveIssueCheck(@request() request: express.Request, @response() res: express.Response) {
-    let result: ResponseRetrieveIssueCheck[];
-    const searchRequest: RequestRetrieveIssueCheck = { issueId: Number(request.params.id) }
+    let result: IssueCheck.RetrieveRes[];
+    const searchRequest: IssueCheck.RetrieveReq = { issueId: Number(request.params.id) }
     console.log('retrieve issueCheck=========================================');
     console.log(searchRequest);
     result = await this.issueCheckService.retrieveIssueCheck(searchRequest);
@@ -38,7 +38,7 @@ export class IssueCheckController implements interfaces.Controller {
 
   @httpPut("/issue/:id/issueCheck/:checkId")
   async updateIssueCheckName(@request() request: express.Request, @response() res: express.Response) {
-    const updateRequest: RequestUpdateIssueCheckName = request.body;
+    const updateRequest: IssueCheck.UpdateNameReq = request.body;
     updateRequest.issueId = Number(request.params.id);
     updateRequest.checkId = Number(request.params.checkId);
     console.log('update issueCheckName=========================================');
@@ -50,7 +50,7 @@ export class IssueCheckController implements interfaces.Controller {
 
   @httpPut("/issue/:id/issueCheck/:checkId/completeYn")
   async updateIssueCheckCompleteYn(@request() request: express.Request, @response() res: express.Response) {
-    const updateRequest: RequestUpdateIssueCheckCompleteYn = {
+    const updateRequest: IssueCheck.UpdateCompleteYnReq = {
       issueId: Number(request.params.id),
       checkId: Number(request.params.checkId),
     };
@@ -63,7 +63,7 @@ export class IssueCheckController implements interfaces.Controller {
 
   @httpDelete("/issue/:id/issueCheck/:checkId")
   async deleteIssueCheck(@request() request: express.Request, @response() res: express.Response) {
-    const deleteRequest: RequestDeleteIssueCheck = {
+    const deleteRequest: IssueCheck.DeleteReq = {
       issueId: Number(request.params.id),
       checkId: Number(request.params.checkId),
     };

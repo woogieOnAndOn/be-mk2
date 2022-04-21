@@ -5,7 +5,7 @@ export interface IssueStateHistory {
   creationData: string;
 }
 
-export interface RequestCreateIssueStateHistory {
+export interface CreateReq {
   issueId: number;
   historyState: string;
 }

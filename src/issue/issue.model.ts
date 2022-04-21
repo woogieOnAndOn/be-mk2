@@ -1,4 +1,4 @@
-import { ResponseRetrieveIssueCheck } from "./issueCheck.model";
+import * as IssueCheck from "./issueCheck.model";
 
 export interface Issue {
   issueId: number;
@@ -9,43 +9,43 @@ export interface Issue {
   user: string;
 }
 
-export interface RequestCreateIssue {
+export interface CreateReq {
   issueName: string;
   user: string;
 }
 
-export interface RequestUpdateIssueName {
+export interface UpdateReq {
   issueId: number;
   issueName: string;
 }
 
-export interface RequestUpdateIssueUseTime {
+export interface UpdateUseTimeReq {
   issueId: number;
 }
 
-export interface RequestUpdateIssueState {
+export interface UpdateStateReq {
   issueId: number;
   issueState: string;
 }
 
-export interface RequestDeleteIssue {
+export interface DeleteReq {
   issueId: number;
 }
 
-export interface RequestRetrieveIssue {
+export interface RetrieveReq {
   user: string;
 }
 
-export interface ResponseRetrieveIssue {
+export interface RetrieveRes {
   issueId: number;
   issueName: string;
   issueState: string;
   useTime: number;
   creationDate: string; 
-  issueChecks: ResponseRetrieveIssueCheck[];
+  issueChecks: IssueCheck.RetrieveRes[];
 }
 
-export enum IssueState {
+export enum State {
   WAIT = 'wait',
   START = 'start',
   COMPLETE = 'complete',
