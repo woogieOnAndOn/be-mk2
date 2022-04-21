@@ -16,8 +16,7 @@ export class IssueCheckController implements interfaces.Controller {
 
   @httpPost("/issue/:id/issueCheck")
   async insertIssueCheck(@request() request: express.Request, @response() res: express.Response) {
-    const insertRequest: IssueCheck.CreateReq = request.body;
-    insertRequest.issueId = Number(request.params.id);
+    const insertRequest: IssueCheck.CreateReq[] = request.body;
     console.log('insert issueCheck=========================================');
     console.log(insertRequest);
     const result: TransactionResult = await this.issueCheckService.insertIssueCheck(insertRequest);
@@ -37,13 +36,11 @@ export class IssueCheckController implements interfaces.Controller {
   }
 
   @httpPut("/issue/:id/issueCheck/:checkId")
-  async updateIssueCheckName(@request() request: express.Request, @response() res: express.Response) {
-    const updateRequest: IssueCheck.UpdateNameReq = request.body;
-    updateRequest.issueId = Number(request.params.id);
-    updateRequest.checkId = Number(request.params.checkId);
+  async updateIssueCheck(@request() request: express.Request, @response() res: express.Response) {
+    const updateRequest: IssueCheck.UpdateReq[] = request.body;
     console.log('update issueCheckName=========================================');
     console.log(updateRequest);
-    const result: TransactionResult = await this.issueCheckService.updateIssueCheckName(updateRequest);
+    const result: TransactionResult = await this.issueCheckService.updateIssueCheck(updateRequest);
     
     return this.commonController.createReturnMessage(ControllerType.ISSUS_CHECK, result, updateRequest, MethodType.UPDATE, '이름');
   }
@@ -63,10 +60,7 @@ export class IssueCheckController implements interfaces.Controller {
 
   @httpDelete("/issue/:id/issueCheck/:checkId")
   async deleteIssueCheck(@request() request: express.Request, @response() res: express.Response) {
-    const deleteRequest: IssueCheck.DeleteReq = {
-      issueId: Number(request.params.id),
-      checkId: Number(request.params.checkId),
-    };
+    const deleteRequest: IssueCheck.DeleteReq[] = request.body;
     console.log('delete issueCheck=========================================');
     console.log(deleteRequest);
     const result: TransactionResult = await this.issueCheckService.deleteIssueCheck(deleteRequest);

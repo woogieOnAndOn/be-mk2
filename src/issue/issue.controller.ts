@@ -43,7 +43,7 @@ export class IssueController implements interfaces.Controller {
   }
 
   @httpPut("/issue/:id")
-  async updateIssueName(@request() request: express.Request, @response() res: express.Response) {
+  async updateIssue(@request() request: express.Request, @response() res: express.Response) {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
@@ -51,7 +51,7 @@ export class IssueController implements interfaces.Controller {
     updateRequest.issueId = Number(request.params.id);
     console.log('update issueName=========================================');
     console.log(updateRequest);
-    const result: TransactionResult = await this.issueService.updateIssueName(updateRequest);
+    const result: TransactionResult = await this.issueService.updateIssue(updateRequest);
     
     return this.commonController.createReturnMessage(ControllerType.ISSUE, result, updateRequest, MethodType.UPDATE, '이름');
   }

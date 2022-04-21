@@ -11,7 +11,7 @@ export interface CreateReq {
   checkName: string;
 }
 
-export interface UpdateNameReq {
+export interface UpdateReq {
   issueId: number;
   checkId: number;
   checkName: string;

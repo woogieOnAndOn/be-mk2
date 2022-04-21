@@ -13,7 +13,7 @@ export class IssueCheckService {
     @inject('IssueCheckRepository') private repository: IssueCheckRepository,
   ) {}
 
-  async insertIssueCheck<T>(request: IssueCheck.CreateReq): Promise<T> {
+  async insertIssueCheck<T>(request: IssueCheck.CreateReq[]): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.insertIssueCheck(request, connection);
     });
@@ -25,9 +25,9 @@ export class IssueCheckService {
     });
   }
 
-  async updateIssueCheckName<T>(request: IssueCheck.UpdateNameReq): Promise<T> {
+  async updateIssueCheck<T>(request: IssueCheck.UpdateReq[]): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      return await this.repository.updateIssueCheckName(request, connection);
+      return await this.repository.updateIssueCheck(request, connection);
     });
   }
 
@@ -37,7 +37,7 @@ export class IssueCheckService {
     });
   }
 
-  async deleteIssueCheck<T>(request: IssueCheck.DeleteReq): Promise<T> {
+  async deleteIssueCheck<T>(request: IssueCheck.DeleteReq[]): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.deleteIssueCheck(request, connection);
     });

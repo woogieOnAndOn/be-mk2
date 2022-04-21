@@ -24,8 +24,8 @@ export class IssueRepository extends CommonRepository {
     return await this.query<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 
-  async updateIssueName<T>(request: Issue.UpdateReq, connection?: any): Promise<T> {
-    const queryInfo: QueryInfo = IssueQuery(IssueQueryId.updateIssueName, request);
+  async updateIssue<T>(request: Issue.UpdateReq, connection?: any): Promise<T> {
+    const queryInfo: QueryInfo = IssueQuery(IssueQueryId.updateIssue, request);
     return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 

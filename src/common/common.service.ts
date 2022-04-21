@@ -27,6 +27,7 @@ export class CommonService {
       if (!inputConnection) await connection.commit();
     } catch (err) {
       if (!inputConnection) await connection.rollback();
+      console.log(err);
       throw err;
     } finally {
       if (!inputConnection && connection) connection.release();

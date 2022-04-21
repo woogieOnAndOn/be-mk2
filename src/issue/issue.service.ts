@@ -8,6 +8,7 @@ import { IssueStateHistoryRepository } from './issueStateHistory.repository';
 import { PoolConnection } from 'mysql2/promise';
 import * as IssueCheck from './issueCheck.model';
 import { IssueCheckRepository } from './issueCheck.repository';
+import { IssueCheckService } from './issueCheck.service';
 
 @injectable()
 export class IssueService {
@@ -16,6 +17,7 @@ export class IssueService {
     @inject('CommonService') protected commonService: CommonService,
     @inject('IssueRepository') private repository: IssueRepository,
     @inject('IssueStateHistoryRepository') private issueStateHistoryRepository: IssueStateHistoryRepository,
+    @inject('IssueCheckService') private issueCheckService: IssueCheckService,
     @inject('IssueCheckRepository') private issueCheckRepository: IssueCheckRepository,
   ) {}
 
@@ -41,9 +43,13 @@ export class IssueService {
     });
   }
 
-  async updateIssueName<T>(request: Issue.UpdateReq): Promise<T> {
+  async updateIssue<T>(request: Issue.UpdateReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      return await this.repository.updateIssueName(request, connection);
+      const updateIssueResult: TransactionResult =  await this.repository.updateIssue(request, connection);
+      await this.issueCheckService.insertIssueCheck(request.newIssueChecks);
+      await this.issueCheckService.updateIssueCheck(request.editIssueChecks);
+      await this.issueCheckService.deleteIssueCheck(request.deleteIssueChecks);
+      return updateIssueResult;
     });
   }
 

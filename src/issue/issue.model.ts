@@ -17,6 +17,10 @@ export interface CreateReq {
 export interface UpdateReq {
   issueId: number;
   issueName: string;
+  useTime: string;
+  newIssueChecks: IssueCheck.CreateReq[]
+  editIssueChecks: IssueCheck.UpdateReq[]
+  deleteIssueChecks: IssueCheck.DeleteReq[]
 }
 
 export interface UpdateUseTimeReq {

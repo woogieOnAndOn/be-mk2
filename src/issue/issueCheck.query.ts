@@ -3,7 +3,7 @@ import { QueryInfo } from '../common/common.model';
 export enum IssueCheckQueryId {
   insertIssueCheck,
   retrieveIssueCheck,
-  updateIssueCheckName,
+  updateIssueCheck,
   updateIssueCheckCompleteYn,
   deleteIssueCheck,
   retrieveAllIssueCheck,
@@ -58,7 +58,7 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
       queryParams.push(request.issueId);
       break;
 
-    case IssueCheckQueryId.updateIssueCheckName:
+    case IssueCheckQueryId.updateIssueCheck:
       query.push(`
         UPDATE md2.issue_check
         SET check_name = ?

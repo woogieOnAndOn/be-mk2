@@ -13,7 +13,7 @@ export class IssueCheckRepository extends CommonRepository {
     this.init();
   }
 
-  async insertIssueCheck<T>(request: IssueCheck.CreateReq, connection?: any): Promise<T> {
+  async insertIssueCheck<T>(request: IssueCheck.CreateReq[], connection?: any): Promise<T> {
     const queryInfo: QueryInfo = IssueCheckQuery(IssueCheckQueryId.insertIssueCheck, request);
     return await this.insertByObj<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
@@ -23,8 +23,8 @@ export class IssueCheckRepository extends CommonRepository {
     return await this.query<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 
-  async updateIssueCheckName<T>(request: IssueCheck.UpdateNameReq, connection?: any): Promise<T> {
-    const queryInfo: QueryInfo = IssueCheckQuery(IssueCheckQueryId.updateIssueCheckName, request);
+  async updateIssueCheck<T>(request: IssueCheck.UpdateReq[], connection?: any): Promise<T> {
+    const queryInfo: QueryInfo = IssueCheckQuery(IssueCheckQueryId.updateIssueCheck, request);
     return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 
@@ -33,7 +33,7 @@ export class IssueCheckRepository extends CommonRepository {
     return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 
-  async deleteIssueCheck<T>(request: IssueCheck.DeleteReq, connection?: any): Promise<T> {
+  async deleteIssueCheck<T>(request: IssueCheck.DeleteReq[], connection?: any): Promise<T> {
     const queryInfo: QueryInfo = IssueCheckQuery(IssueCheckQueryId.deleteIssueCheck, request);
     return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
