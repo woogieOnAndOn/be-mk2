@@ -9,13 +9,14 @@ export interface Tree {
   user     ?:string;
 }
 
-export interface TreeSearchCondition {
+export interface RetrieveReq {
   parent: number;
   secret: number;
   user: string;
 }
 
-export interface RequestCreateTree {
+export interface RetrieveRes {
+  id: number;
   type: number;            // 10: folder, 20: file
   name: string;
   content: string;
@@ -25,7 +26,17 @@ export interface RequestCreateTree {
   user: string;
 }
 
-export interface RequestUpdateTree {
+export interface CreateReq {
+  type: number;            // 10: folder, 20: file
+  name: string;
+  content: string;
+  depth: number;
+  parent: number;
+  secret: number;          // 0: piblic, 1: private
+  user: string;
+}
+
+export interface UpdateReq {
   id: number;
   name: string;
   content: string;
@@ -33,13 +44,13 @@ export interface RequestUpdateTree {
   user: string;
 }
 
-export interface RequestDeleteTree {
+export interface DeleteReq {
   id: number;
   type: number;            // 10: folder, 20: file
   user: string;
 }
 
-export interface RequestUpdateSeqTree {
+export interface UpdateSeqReq {
   id: number;
   type: number;            // 10: folder, 20: file
   depth: number;
@@ -48,7 +59,7 @@ export interface RequestUpdateSeqTree {
   user: string;
 }
 
-export interface RequestGetTree {
+export interface GetReq {
   id: number;
   user: string;
 }

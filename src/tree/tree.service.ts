@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { CommonService } from '../common/common.service';
 import { PoolConnection } from 'mysql2/promise';
 import { TreeRepository } from './tree.repository';
-import { RequestCreateTree, RequestDeleteTree, RequestGetTree, RequestUpdateSeqTree, RequestUpdateTree, Tree, TreeSearchCondition } from './tree.model';
+import * as Tree from './tree.model';
 import { DBConnectionFactory } from '../utils/dbConnectionFactory.util';
 import { TransactionResult } from '../common/common.model';
 
@@ -14,26 +14,26 @@ export class TreeService {
     @inject('TreeRepository') private repository: TreeRepository
   ) {}
 
-  async insertTree<T>(request: RequestCreateTree): Promise<T> {
+  async insertTree<T>(request: Tree.CreateReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
         return await this.repository.insertTree(request, connection)
     })
   }
 
   
-  async retrieveTree<T>(request: TreeSearchCondition): Promise<T> {
+  async retrieveTree<T>(request: Tree.RetrieveReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.retrieveTree(request, connection);
     })
   }
 
-  async updateTree<T>(request: RequestUpdateTree): Promise<T> {
+  async updateTree<T>(request: Tree.UpdateReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.updateTree(request, connection);
     })
   }
 
-  async deleteTree<T>(request: RequestDeleteTree): Promise<T> {
+  async deleteTree<T>(request: Tree.DeleteReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       const deleteTargetMinus = [];
       const deleteTargetPlus = [];
@@ -45,7 +45,7 @@ export class TreeService {
 
       while (deleteTargetMinus.length > 0) {
         requestDeleteTarget = Number(deleteTargetMinus.pop());
-        let targetChildren: Tree[] = await this.repository.retrieveDeleteTarget(requestDeleteTarget, connection);
+        let targetChildren: Tree.RetrieveRes[] = await this.repository.retrieveDeleteTarget(requestDeleteTarget, connection);
         for (let child of targetChildren) {
           deleteTargetMinus.push(child.id);
           deleteTargetPlus.push(child.id);
@@ -58,7 +58,7 @@ export class TreeService {
     });
   }
 
-  async updateSeqTree<T>(request: RequestUpdateSeqTree): Promise<T> {
+  async updateSeqTree<T>(request: Tree.UpdateSeqReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       const result: TransactionResult = await this.repository.updateSeqSurroundingTree(request, connection);
       if (result.affectedRows === 1) {
@@ -69,7 +69,7 @@ export class TreeService {
     })
   }
 
-  async getTree<T>(request: RequestGetTree): Promise<T> {
+  async getTree<T>(request: Tree.GetReq): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       return await this.repository.getTree(request, connection);
     })

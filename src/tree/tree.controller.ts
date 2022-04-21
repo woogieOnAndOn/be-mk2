@@ -3,7 +3,7 @@ import { interfaces, controller, httpGet, httpPost, httpDelete, request, queryPa
 import { inject } from "inversify";
 import { TreeService } from "./tree.service";
 import { MethodType, ControllerType, TransactionResult } from '../common/common.model';
-import { RequestCreateTree, RequestDeleteTree, RequestUpdateSeqTree, RequestUpdateTree, Tree, TreeSearchCondition } from './tree.model';
+import * as Tree from './tree.model';
 import { CommonController } from "../common/common.controller";
 import * as userSession from '../userSession/userSession.model';
 
@@ -25,11 +25,11 @@ export class TreeController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
-    const insertRequest: RequestCreateTree = request.body;
+    const insertRequest: Tree.CreateReq = request.body;
     insertRequest.user = userSession.userName;
     console.log('insert tree=========================================');
     const result: TransactionResult = await this.treeService.insertTree(insertRequest);
-    const insertedTree: Tree = await this.treeService.getTree({ id: result.insertId, user: userSession.userName });
+    const insertedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: result.insertId, user: userSession.userName });
     console.log(insertedTree);
     
     return this.commonController.createReturnMessage(ControllerType.TREE, result, insertedTree, MethodType.CREATE);
@@ -40,7 +40,7 @@ export class TreeController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
-    const searchRequest: TreeSearchCondition = {
+    const searchRequest: Tree.RetrieveReq = {
       parent: request.query.parent ? Number(request.query.parent) : 0,
       secret: request.query.secret ? Number(request.query.secret) : 0,
       user: userSession.userName,
@@ -57,11 +57,11 @@ export class TreeController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
-    const updateRequest: RequestUpdateTree = request.body;
+    const updateRequest: Tree.UpdateReq = request.body;
     updateRequest.id = Number(request.params.id);
     console.log('update tree=========================================');
     const result: TransactionResult = await this.treeService.updateTree(updateRequest);
-    const updatedTree: Tree = await this.treeService.getTree({ id: updateRequest.id, user: userSession.userName });
+    const updatedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: updateRequest.id, user: userSession.userName });
     console.log(updatedTree);
     
     return this.commonController.createReturnMessage(ControllerType.TREE, result, updatedTree, MethodType.UPDATE);
@@ -72,7 +72,7 @@ export class TreeController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
 
-    const deleteRequest: RequestDeleteTree = request.body;
+    const deleteRequest: Tree.DeleteReq = request.body;
     deleteRequest.id = Number(request.params.id);
     console.log('delete tree=========================================');
     console.log(deleteRequest);
@@ -86,7 +86,7 @@ export class TreeController implements interfaces.Controller {
     const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
     if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
     
-    const updateSeqRequest: RequestUpdateSeqTree = request.body;
+    const updateSeqRequest: Tree.UpdateSeqReq = request.body;
     updateSeqRequest.id = Number(request.params.id);
     console.log('update seq tree=========================================');
     console.log(updateSeqRequest);
