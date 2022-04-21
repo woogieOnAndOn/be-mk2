@@ -95,7 +95,7 @@ export const IssueCheckQuery = (queryId: IssueCheckQueryId, request: any = {}) =
         WHERE issue_id = ? 
         AND check_id IN (
       `);
-      queryParams.push(request.issueId);
+      queryParams.push(request[0].issueId);
 
       request.forEach((req: any, index: number) => {
         query.push(` ? `);

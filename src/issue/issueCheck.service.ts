@@ -32,7 +32,8 @@ export class IssueCheckService {
 
   async updateIssueCheck<T>(request: IssueCheck.UpdateReq[], inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      const updateIssueCheckResult: TransactionResult[] = await this.repository.updateIssueCheck(request, connection);
+      let updateIssueCheckResult: TransactionResult[] = await this.repository.updateIssueCheck(request, connection);
+      updateIssueCheckResult = [...updateIssueCheckResult];
       updateIssueCheckResult.forEach((result: TransactionResult, index: number) => {
         if (result.affectedRows !== 1) {
           throw new Error;
