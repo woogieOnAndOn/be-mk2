@@ -13,9 +13,10 @@ export enum MethodType {
 }
 
 export enum ControllerType {
-  TREE = 'tree',
-  ISSUE = 'issue',
-  ISSUS_CHECK = 'issueCheck',
+  COMMON = 'common',
+  TREE = '트리',
+  ISSUE = '이슈',
+  ISSUS_CHECK = '이슈체크',
 }
 
 export interface TransactionResult {
