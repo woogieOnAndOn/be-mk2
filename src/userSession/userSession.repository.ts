@@ -13,9 +13,9 @@ export class UserSessionRepository extends CommonRepository {
     this.init();
   }
 
-  async getUserSession(request: userSession.getRequest, connection?: any): Promise<userSession.getResponse> {
+  async getUserSession(request: userSession.getReq, connection?: any): Promise<userSession.getRes> {
     const queryInfo: QueryInfo = UserSessionQuery(UserSessionQueryId.getUserSession, request);
-    const rows: Array<userSession.getResponse> = await this.query(queryInfo.query, queryInfo.queryParams, connection);
+    const rows: Array<userSession.getRes> = await this.query(queryInfo.query, queryInfo.queryParams, connection);
     return rows[0];
   }
 }

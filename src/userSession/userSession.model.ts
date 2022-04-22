@@ -1,8 +1,8 @@
-export interface getRequest {
+export interface getReq {
   sessionId: string;
 }
 
-export interface getResponse {
+export interface getRes {
   userId: string;
   userName: string;
   sessionId: string;
