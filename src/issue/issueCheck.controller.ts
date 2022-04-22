@@ -5,66 +5,69 @@ import { IssueCheckService } from "./issueCheck.service";
 import * as IssueCheck from './issueCheck.model';
 import { ControllerType, MethodType, TransactionResult } from "../common/common.model";
 import { CommonController } from "../common/common.controller";
+import { UserSessionService } from "../userSession/userSession.service";
+import * as userSession from '../userSession/userSession.model';
 
 @controller("")
-export class IssueCheckController implements interfaces.Controller {
+export class IssueCheckController extends CommonController implements interfaces.Controller {
 
   constructor( 
     @inject('IssueCheckService') private issueCheckService: IssueCheckService,
-    @inject('CommonController') private commonController: CommonController,
-  ) {}
+    @inject('UserSessionService') userSessionService: UserSessionService
+  ) {
+    super(userSessionService);
+  }
 
   @httpPost("/issue/:id/issueCheck")
   async insertIssueCheck(@request() request: express.Request, @response() res: express.Response) {
-    const insertRequest: IssueCheck.CreateReq[] = request.body;
-    console.log('insert issueCheck=========================================');
-    console.log(insertRequest);
-    const result: TransactionResult = await this.issueCheckService.insertIssueCheck(insertRequest);
-    
-    return this.commonController.createReturnMessage(ControllerType.ISSUS_CHECK, result, insertRequest, MethodType.CREATE);
+    return await this.errorHandlingExecutor(request, ControllerType.ISSUS_CHECK, MethodType.CREATE, async (requestUser: userSession.getRes) => {
+      const insertRequest: IssueCheck.CreateReq[] = request.body;
+      console.log('insert issueCheck=========================================');
+      console.log(insertRequest);
+      return await this.issueCheckService.insertIssueCheck(insertRequest);
+    });
   }
 
   @httpGet("/issue/:id/issueCheck")
   async retrieveIssueCheck(@request() request: express.Request, @response() res: express.Response) {
-    let result: IssueCheck.RetrieveRes[];
-    const searchRequest: IssueCheck.RetrieveReq = { issueId: Number(request.params.id) }
-    console.log('retrieve issueCheck=========================================');
-    console.log(searchRequest);
-    result = await this.issueCheckService.retrieveIssueCheck(searchRequest);
-    
-    return this.commonController.createReturnMessage(ControllerType.ISSUS_CHECK, result, null, MethodType.READ);
+    return await this.errorHandlingExecutor(request, ControllerType.ISSUS_CHECK, MethodType.READ, async (requestUser: userSession.getRes) => {
+      const searchRequest: IssueCheck.RetrieveReq = { issueId: Number(request.params.id) }
+      console.log('retrieve issueCheck=========================================');
+      console.log(searchRequest);
+      return await this.issueCheckService.retrieveIssueCheck(searchRequest);
+    });
   }
 
   @httpPut("/issue/:id/issueCheck/:checkId")
   async updateIssueCheck(@request() request: express.Request, @response() res: express.Response) {
-    const updateRequest: IssueCheck.UpdateReq[] = request.body;
-    console.log('update issueCheckName=========================================');
-    console.log(updateRequest);
-    const result: TransactionResult = await this.issueCheckService.updateIssueCheck(updateRequest);
-    
-    return this.commonController.createReturnMessage(ControllerType.ISSUS_CHECK, result, updateRequest, MethodType.UPDATE, '이름');
+    return await this.errorHandlingExecutor(request, ControllerType.ISSUS_CHECK, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
+      const updateRequest: IssueCheck.UpdateReq[] = request.body;
+      console.log('update issueCheckName=========================================');
+      console.log(updateRequest);
+      return await this.issueCheckService.updateIssueCheck(updateRequest);
+    }, '이름');
   }
 
   @httpPut("/issue/:id/issueCheck/:checkId/completeYn")
   async updateIssueCheckCompleteYn(@request() request: express.Request, @response() res: express.Response) {
-    const updateRequest: IssueCheck.UpdateCompleteYnReq = {
-      issueId: Number(request.params.id),
-      checkId: Number(request.params.checkId),
-    };
-    console.log('update issueCheckCompleteYn=========================================');
-    console.log(updateRequest);
-    const result: TransactionResult = await this.issueCheckService.updateIssueCheckCompleteYn(updateRequest);
-    
-    return this.commonController.createReturnMessage(ControllerType.ISSUS_CHECK, result, updateRequest, MethodType.UPDATE, '완료여부');
+    return await this.errorHandlingExecutor(request, ControllerType.ISSUS_CHECK, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
+      const updateRequest: IssueCheck.UpdateCompleteYnReq = {
+        issueId: Number(request.params.id),
+        checkId: Number(request.params.checkId),
+      };
+      console.log('update issueCheckCompleteYn=========================================');
+      console.log(updateRequest);
+      return await this.issueCheckService.updateIssueCheckCompleteYn(updateRequest);
+    }, '완료여부');
   }
 
   @httpDelete("/issue/:id/issueCheck/:checkId")
   async deleteIssueCheck(@request() request: express.Request, @response() res: express.Response) {
-    const deleteRequest: IssueCheck.DeleteReq[] = request.body;
-    console.log('delete issueCheck=========================================');
-    console.log(deleteRequest);
-    const result: TransactionResult = await this.issueCheckService.deleteIssueCheck(deleteRequest);
-    
-    return this.commonController.createReturnMessage(ControllerType.ISSUS_CHECK, result, deleteRequest, MethodType.DELETE);
+    return await this.errorHandlingExecutor(request, ControllerType.ISSUS_CHECK, MethodType.DELETE, async (requestUser: userSession.getRes) => {
+      const deleteRequest: IssueCheck.DeleteReq[] = request.body;
+      console.log('delete issueCheck=========================================');
+      console.log(deleteRequest);
+      return await this.issueCheckService.deleteIssueCheck(deleteRequest);
+    });
   }
 }
