@@ -6,92 +6,93 @@ import { MethodType, ControllerType, TransactionResult } from '../common/common.
 import * as Tree from './tree.model';
 import { CommonController } from "../common/common.controller";
 import * as userSession from '../userSession/userSession.model';
+import { UserSessionService } from "../userSession/userSession.service";
 
 @controller("")
-export class TreeController implements interfaces.Controller {
+export class TreeController extends CommonController implements interfaces.Controller {
 
   constructor( 
     @inject('TreeService') private treeService: TreeService,
-    @inject('CommonController') private commonController: CommonController,
-  ) {}
+    @inject('UserSessionService') userSessionService: UserSessionService
+  ) {
+    super(userSessionService);
+  }
 
   @httpGet("/")
   private index(request: express.Request, res: express.Response, next: express.NextFunction): string {
-      return "success!";
+    return "success!";
   }
 
   @httpPost("/tree")
   async insertTree(@request() request: express.Request, @response() res: express.Response) {
-    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
-
-    const insertRequest: Tree.CreateReq = request.body;
-    insertRequest.user = userSession.userName;
-    console.log('insert tree=========================================');
-    const result: TransactionResult = await this.treeService.insertTree(insertRequest);
-    const insertedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: result.insertId, user: userSession.userName });
-    console.log(insertedTree);
-    
-    return this.commonController.createReturnMessage(ControllerType.TREE, result, insertedTree, MethodType.CREATE);
+    return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.CREATE, async (requestUser: userSession.getRes) => {
+      const insertRequest: Tree.CreateReq = request.body;
+      insertRequest.user = requestUser.userName;
+      console.log('insert tree=========================================');
+      const result: TransactionResult = await this.treeService.insertTree(insertRequest);
+      const insertedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: result.insertId, user: requestUser.userName });
+      console.log(insertedTree);
+      return insertedTree;
+    });
   }
     
   @httpGet("/tree")
   async retrieveTree(@request() request: express.Request, @response() res: express.Response) {
-    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
-
-    const searchRequest: Tree.RetrieveReq = {
-      parent: request.query.parent ? Number(request.query.parent) : 0,
-      secret: request.query.secret ? Number(request.query.secret) : 0,
-      user: userSession.userName,
-    };
-    console.log('retrieve tree=========================================');
-    console.log(searchRequest);
-    const result = await this.treeService.retrieveTree(searchRequest);
-
-    return this.commonController.createReturnMessage(ControllerType.TREE, result, null, MethodType.READ);
+    return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.READ, async (requestUser: userSession.getRes) => {
+      const searchRequest: Tree.RetrieveReq = {
+        parent: request.query.parent ? Number(request.query.parent) : 0,
+        secret: request.query.secret ? Number(request.query.secret) : 0,
+        user: requestUser.userName,
+      };
+      console.log('retrieve tree=========================================');
+      console.log(searchRequest);
+      return await this.treeService.retrieveTree(searchRequest);
+    });
   }
 
   @httpPut("/tree/:id")
   async updateTree(@request() request: express.Request, @response() res: express.Response) {
-    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
+    return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
+      const updateRequest: Tree.UpdateReq = request.body;
+      updateRequest.id = Number(request.params.id);
+      console.log('update tree=========================================');
+      const result: TransactionResult = await this.treeService.updateTree(updateRequest);
+      if (result.affectedRows !== 1) {
+        throw new Error(JSON.stringify(result));
+      }
 
-    const updateRequest: Tree.UpdateReq = request.body;
-    updateRequest.id = Number(request.params.id);
-    console.log('update tree=========================================');
-    const result: TransactionResult = await this.treeService.updateTree(updateRequest);
-    const updatedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: updateRequest.id, user: userSession.userName });
-    console.log(updatedTree);
-    
-    return this.commonController.createReturnMessage(ControllerType.TREE, result, updatedTree, MethodType.UPDATE);
+      const updatedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: updateRequest.id, user: requestUser.userName });
+      console.log(updatedTree);
+      return updatedTree;
+    });
   }
 
   @httpDelete("/tree/:id")
   async deleteTree(@request() request: express.Request, @response() res: express.Response) {
-    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
-
-    const deleteRequest: Tree.DeleteReq = request.body;
-    deleteRequest.id = Number(request.params.id);
-    console.log('delete tree=========================================');
-    console.log(deleteRequest);
-    const result: TransactionResult = await this.treeService.deleteTree(deleteRequest);
-    
-    return this.commonController.createReturnMessage(ControllerType.TREE, result, deleteRequest, MethodType.DELETE);
+    return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.DELETE, async (requestUser: userSession.getRes) => {
+      const deleteRequest: Tree.DeleteReq = request.body;
+      deleteRequest.id = Number(request.params.id);
+      console.log('delete tree=========================================');
+      console.log(deleteRequest);
+      return await this.treeService.deleteTree(deleteRequest);
+    });
   }
 
   @httpPut("/tree/:id/seq")
   async updateSeqTree(@request() request: express.Request, @response() res: express.Response) {
-    const userSession: userSession.getResponse = await this.commonController.getUserSession({ sessionId: request.cookies['JSESSIONID'] });
-    if (!userSession) return { msId: 0, msContent: 'Invalid Session, 다시 로그인 하십시오.' };
-    
-    const updateSeqRequest: Tree.UpdateSeqReq = request.body;
-    updateSeqRequest.id = Number(request.params.id);
-    console.log('update seq tree=========================================');
-    console.log(updateSeqRequest);
-    const result: TransactionResult = await this.treeService.updateSeqTree(updateSeqRequest);
-    
-    return this.commonController.createReturnMessage(ControllerType.TREE, result, updateSeqRequest, MethodType.EXTRA);
+    return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
+      const updateSeqRequest: Tree.UpdateSeqReq = request.body;
+      updateSeqRequest.id = Number(request.params.id);
+      console.log('update seq tree=========================================');
+      console.log(updateSeqRequest);
+      const result: TransactionResult = await this.treeService.updateSeqTree(updateSeqRequest);
+      if (result.affectedRows !== 1) {
+        throw new Error(JSON.stringify(result));
+      }
+
+      const updatedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: updateSeqRequest.id, user: requestUser.userName });
+      console.log(updatedTree);
+      return updatedTree;
+    });
   }
 }
