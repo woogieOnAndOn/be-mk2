@@ -29,19 +29,17 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           type,
           name,
           content,
-          depth,
           parent,
           secret,
           seq,
           user
         )
         VALUES
-        (?, ?, ?, ?, ?, ?,
+        (?, ?, ?, ?, ?,
           (
             SELECT IFNULL(MAX(tr.seq), 0) + 1
             FROM md2.tree tr
-            WHERE tr.depth = ?
-            AND tr.type = ?
+            WHERE tr.type = ?
             AND tr.parent = ?
             AND tr.user = ?
             AND tr.delete_yn = 'N'
@@ -52,11 +50,9 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
       queryParams.push(request.type);
       queryParams.push(request.name);
       queryParams.push(request.content);
-      queryParams.push(request.depth);
       queryParams.push(request.parent);
       queryParams.push(request.secret);
 
-      queryParams.push(request.depth);
       queryParams.push(request.type);
       queryParams.push(request.parent);
       queryParams.push(request.user);
@@ -96,7 +92,6 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.type,
           tr.name,
           tr.content,
-          tr.depth,
           tr.parent,
           tr.secret,
           NULL AS children
@@ -123,7 +118,6 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.type,
           tr.name,
           tr.content,
-          tr.depth,
           tr.parent,
           tr.secret
         FROM md2.tree tr
@@ -147,8 +141,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
               ,t.id
               ,t.seq
             FROM md2.tree t
-            WHERE t.depth = ?
-            AND t.parent = ?
+            WHERE t.parent = ?
             AND t.type = ?
             ORDER BY seq 
           ) AS t1
@@ -157,8 +150,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
               RANK() OVER(ORDER BY t.seq) AS 'num'
               ,t.id
             FROM md2.tree t
-            WHERE t.depth = ?
-            AND t.parent = ?
+            WHERE t.parent = ?
             AND t.type = ?
             ORDER BY seq 
           ) AS t2
@@ -168,10 +160,8 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         SET tr.seq = sq.givSeq
         WHERE tr.id = sq.surroundId
       `);
-      queryParams.push(request.depth);
       queryParams.push(request.parent);
       queryParams.push(request.type);
-      queryParams.push(request.depth);
       queryParams.push(request.parent);
       queryParams.push(request.type);
       queryParams.push(request.id);
@@ -194,7 +184,6 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.type,
           tr.name,
           tr.content,
-          tr.depth,
           tr.parent,
           tr.secret,
           NULL AS children

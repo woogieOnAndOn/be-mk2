@@ -3,7 +3,6 @@ export interface Tree {
   type     ?:number;            // 10: folder, 20: file
   name     ?:string;
   content  ?:string;
-  depth    ?:number;
   parent   ?:number;
   secret   ?:number;          // 0: piblic, 1: private
   user     ?:string;
@@ -20,7 +19,6 @@ export interface RetrieveRes {
   type: number;            // 10: folder, 20: file
   name: string;
   content: string;
-  depth: number;
   parent: number;
   secret: number;          // 0: piblic, 1: private
   user: string;
@@ -30,7 +28,6 @@ export interface CreateReq {
   type: number;            // 10: folder, 20: file
   name: string;
   content: string;
-  depth: number;
   parent: number;
   secret: number;          // 0: piblic, 1: private
   user: string;
@@ -53,7 +50,6 @@ export interface DeleteReq {
 export interface UpdateSeqReq {
   id: number;
   type: number;            // 10: folder, 20: file
-  depth: number;
   parent: number;
   upDown: UpDown;
   user: string;
