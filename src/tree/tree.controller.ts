@@ -41,7 +41,6 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.READ, async (requestUser: userSession.getRes) => {
       const searchRequest: Tree.RetrieveReq = {
         parent: request.query.parent ? Number(request.query.parent) : 0,
-        secret: request.query.secret ? Number(request.query.secret) : 0,
         user: requestUser.userName,
       };
       console.log('retrieve tree=========================================');

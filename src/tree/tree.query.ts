@@ -30,12 +30,11 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           name,
           content,
           parent,
-          secret,
           seq,
           user
         )
         VALUES
-        (?, ?, ?, ?, ?,
+        (?, ?, ?, ?,
           (
             SELECT IFNULL(MAX(tr.seq), 0) + 1
             FROM md2.tree tr
@@ -51,7 +50,6 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
       queryParams.push(request.name);
       queryParams.push(request.content);
       queryParams.push(request.parent);
-      queryParams.push(request.secret);
 
       queryParams.push(request.type);
       queryParams.push(request.parent);
@@ -65,13 +63,11 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         UPDATE md2.tree
         SET
           name = ?,
-          content = ?,
-          secret = ?
+          content = ?
         WHERE id = ?        
       `);
       queryParams.push(request.name);
       queryParams.push(request.content);
-      queryParams.push(request.secret);
       queryParams.push(request.id);
       break;
 
@@ -93,7 +89,6 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.name,
           tr.content,
           tr.parent,
-          tr.secret,
           NULL AS children
         FROM md2.tree tr
         WHERE tr.parent = ?
@@ -103,9 +98,6 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
       queryParams.push(request.parent);
       queryParams.push(request.user);
 
-      if (request.secret === 0) {
-        query.push(`AND tr.secret = 0`);
-      }
       query.push(`
         ORDER BY tr.type, tr.seq
       `);
@@ -118,8 +110,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.type,
           tr.name,
           tr.content,
-          tr.parent,
-          tr.secret
+          tr.parent
         FROM md2.tree tr
         WHERE tr.parent = ?
         AND tr.delete_yn = 'N'
@@ -185,7 +176,6 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.name,
           tr.content,
           tr.parent,
-          tr.secret,
           NULL AS children
         FROM md2.tree tr
         WHERE tr.id = ?
