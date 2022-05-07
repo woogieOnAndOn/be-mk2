@@ -59,4 +59,8 @@ export class TreeRepository extends CommonRepository {
     return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 
+  async updateLocationTree<T>(request: Tree.UpdateLocationReq, connection?: any): Promise<T> {
+    const queryInfo: QueryInfo = TreeQuery(TreeQueryId.updateLocationTree, request);
+    return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
+  }
 }

@@ -60,6 +60,16 @@ export interface CorrectSeqReq {
   parent: number;
 }
 
+export interface UpdateLocationReq {
+  parent: number;
+  ids: number[];
+}
+
+export enum Type {
+  FORDER = 10,
+  FILE = 20,
+}
+
 export enum UpDown {
   UP = 'UP',
   DOWN = 'DOWN',

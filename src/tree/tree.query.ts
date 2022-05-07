@@ -12,6 +12,7 @@ export enum TreeQueryId {
   updateSeqTargetTree,
   getTree,
   correctSeqTargetTree,
+  updateLocationTree,
 }
 
 export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
@@ -200,6 +201,24 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
       `);
       queryParams.push(request.parent);
       queryParams.push(request.type);
+      break;
+    
+    case TreeQueryId.updateLocationTree:
+      query.push(`
+        UPDATE md2.tree t 
+        SET 
+          t.parent = ?
+          ,t.seq = 99999999
+        WHERE t.id IN (
+      `);
+      queryParams.push(request.parent);
+
+      request.ids && request.ids.forEach((id: number, index: number, ids: number[]) => {
+        query.push(`?`);
+        queryParams.push(id);
+        if (ids.length !== index + 1) query.push(`,`);
+      });
+      query.push(`)`);
       break;
 
     default:

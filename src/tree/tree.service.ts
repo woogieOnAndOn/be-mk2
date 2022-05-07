@@ -80,4 +80,17 @@ export class TreeService {
       return await this.repository.correctSeqTargetTree(request, connection);
     }, inputConnection)
   }
+
+  async updateLocationTree<T>(request: Tree.UpdateLocationReq, inputConnection?: PoolConnection): Promise<T> {
+    return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
+      const result: TransactionResult = await this.repository.updateLocationTree(request, connection);
+      if (result.affectedRows > 0) {
+        await this.correctSeqTargetTree({ type: Tree.Type.FORDER, parent: request.parent });
+        await this.correctSeqTargetTree({ type: Tree.Type.FILE,   parent: request.parent });
+      } else {
+        throw new Error;
+      }
+      return result;
+    }, inputConnection)
+  }
 }
