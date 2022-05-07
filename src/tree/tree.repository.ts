@@ -53,4 +53,10 @@ export class TreeRepository extends CommonRepository {
     const rows = await this.query<T>(queryInfo.query, queryInfo.queryParams, connection);
     return rows[0];
   }
+
+  async correctSeqTargetTree<T>(request: Tree.CorrectSeqReq, connection?: any): Promise<T> {
+    const queryInfo: QueryInfo = TreeQuery(TreeQueryId.correctSeqTargetTree, request);
+    return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
+  }
+
 }

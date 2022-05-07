@@ -55,6 +55,11 @@ export interface GetReq {
   user: string;
 }
 
+export interface CorrectSeqReq {
+  type: number;            // 10: folder, 20: file
+  parent: number;
+}
+
 export enum UpDown {
   UP = 'UP',
   DOWN = 'DOWN',

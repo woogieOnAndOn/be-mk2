@@ -11,6 +11,7 @@ export enum TreeQueryId {
   updateSeqSurroundingTree,
   updateSeqTargetTree,
   getTree,
+  correctSeqTargetTree,
 }
 
 export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
@@ -180,6 +181,25 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         WHERE tr.id = ?
       `);
       queryParams.push(request.id);
+      break;
+    
+    case TreeQueryId.correctSeqTargetTree:
+      query.push(`
+        UPDATE md2.tree t2, (SELECT @seqNum:= 0 ) r
+        SET t2.seq = (@seqNum := @seqNum + 1)
+        WHERE t2.id IN (
+          SELECT t1.id 
+          FROM (
+            SELECT * 
+            FROM md2.tree t 
+            WHERE t.parent = ?
+            AND t.type = ?
+            ORDER BY seq
+          ) AS t1
+        )      
+      `);
+      queryParams.push(request.parent);
+      queryParams.push(request.type);
       break;
 
     default:

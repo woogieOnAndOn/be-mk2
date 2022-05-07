@@ -74,4 +74,10 @@ export class TreeService {
       return await this.repository.getTree(request, connection);
     }, inputConnection)
   }
+
+  async correctSeqTargetTree<T>(request: Tree.CorrectSeqReq, inputConnection?: PoolConnection): Promise<T> {
+    return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
+      return await this.repository.correctSeqTargetTree(request, connection);
+    }, inputConnection)
+  }
 }
