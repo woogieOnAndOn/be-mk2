@@ -94,4 +94,15 @@ export class TreeController extends CommonController implements interfaces.Contr
       return updatedTree;
     });
   }
+
+  @httpPut("/tree/:id/children")
+  async updateLocationTree(@request() request: express.Request, @response() res: express.Response) {
+    return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
+      const updateRequest: Tree.UpdateLocationReq = request.body;
+      updateRequest.parent = Number(request.params.id);
+      console.log('update location tree=========================================');
+      const result: TransactionResult = await this.treeService.updateLocationTree(updateRequest);
+      return result;
+    }, '이동');
+  }
 }
