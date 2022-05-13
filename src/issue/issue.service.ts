@@ -23,7 +23,16 @@ export class IssueService {
 
   async insertIssue<T>(request: Issue.CreateReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-      return await this.repository.insertIssue(request, connection);
+      const insertIssueResult: TransactionResult = await this.repository.insertIssue(request, connection);
+
+      if (request.issueChecks.length) {
+        request.issueChecks.forEach((issueCheck: IssueCheck.CreateReq, index: number, issueChecks: IssueCheck.CreateReq[]) => {
+          issueChecks[index].issueId = insertIssueResult.insertId;
+        })
+        await this.issueCheckService.insertIssueCheck(request.issueChecks, connection);
+      }
+
+      return insertIssueResult;
     }, inputConnection);
   }
 
@@ -40,6 +49,14 @@ export class IssueService {
       });
 
       return issues;
+    }, inputConnection);
+  }
+
+  async getIssue<T>(request: Issue.GetReq, inputConnection?: PoolConnection): Promise<T> {
+    return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
+      const issue: Issue.RetrieveRes = await this.repository.getIssue(request, connection);
+      issue.issueChecks = await this.issueCheckService.retrieveIssueCheck({ issueId: issue.issueId }, connection) || [];
+      return issue;
     }, inputConnection);
   }
 

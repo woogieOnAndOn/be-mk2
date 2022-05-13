@@ -3,6 +3,7 @@ import { QueryInfo } from '../common/common.model';
 export enum IssueQueryId {
   insertIssue,
   retrieveIssue,
+  getIssue,
   updateIssue,
   updateUseTime,
   updateState,
@@ -49,6 +50,20 @@ export const IssueQuery = (queryId: IssueQueryId, request: any = {}) => {
         WHERE user = ?
       `);
       queryParams.push(request.user);
+      break;
+
+    case IssueQueryId.getIssue:
+      query.push(`
+        SELECT 
+          issue_id AS issueId, 
+          issue_name AS issueName, 
+          issue_state AS issueState, 
+          use_time AS useTime, 
+          creation_date AS creationDate
+        FROM md2.issue
+        WHERE issue_id = ?
+      `);
+      queryParams.push(request.issueId);
       break;
 
     case IssueQueryId.updateIssue:

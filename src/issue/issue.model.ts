@@ -12,6 +12,7 @@ export interface Issue {
 export interface CreateReq {
   issueName: string;
   user: string;
+  issueChecks: IssueCheck.CreateReq[]
 }
 
 export interface UpdateReq {
@@ -38,6 +39,10 @@ export interface DeleteReq {
 
 export interface RetrieveReq {
   user: string;
+}
+
+export interface GetReq {
+  issueId: number;
 }
 
 export interface RetrieveRes {
