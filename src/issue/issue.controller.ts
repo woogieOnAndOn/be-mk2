@@ -25,7 +25,10 @@ export class IssueController extends CommonController implements interfaces.Cont
       insertRequest.user = requestUser.userName;
       console.log('insert issue=========================================');
       console.log(insertRequest);
-      return await this.issueService.insertIssue(insertRequest);
+      const result: TransactionResult = await this.issueService.insertIssue(insertRequest);
+      const insertedIssue: Issue.RetrieveRes = await this.issueService.getIssue({ issueId: result.insertId });
+      console.log(insertedIssue);
+      return insertedIssue;
     });
   }
 
@@ -44,8 +47,11 @@ export class IssueController extends CommonController implements interfaces.Cont
       updateRequest.issueId = Number(request.params.id);
       console.log('update issueName=========================================');
       console.log(updateRequest);
-      return await this.issueService.updateIssue(updateRequest);
-    }, '이름');
+      const result: TransactionResult = await this.issueService.updateIssue(updateRequest);
+      const updatedIssue: Issue.RetrieveRes = await this.issueService.getIssue({ issueId: updateRequest.issueId });
+      console.log(updatedIssue);
+      return updatedIssue;
+    });
   }
 
   @httpPut("/issue/:id/useTime")
@@ -73,7 +79,7 @@ export class IssueController extends CommonController implements interfaces.Cont
 
   @httpDelete("/issue/:id")
   async deleteIssue(@request() request: express.Request, @response() res: express.Response) {
-    return await this.errorHandlingExecutor(request, ControllerType.ISSUE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
+    return await this.errorHandlingExecutor(request, ControllerType.ISSUE, MethodType.DELETE, async (requestUser: userSession.getRes) => {
       const deleteRequest: Issue.DeleteReq = { issueId: Number(request.params.id) };
       console.log('delete issue=========================================');
       console.log(deleteRequest);
