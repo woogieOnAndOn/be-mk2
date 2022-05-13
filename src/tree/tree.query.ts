@@ -3,7 +3,6 @@ import { UpDown } from './tree.model';
 
 export enum TreeQueryId {
   insertTree,
-  selectTree,
   updateTree,
   deleteTree,
   retrieveTree,
