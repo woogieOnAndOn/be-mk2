@@ -23,11 +23,8 @@ export class IssueController extends CommonController implements interfaces.Cont
     return await this.errorHandlingExecutor(request, ControllerType.ISSUE, MethodType.CREATE, async (requestUser: userSession.getRes) => {
       const insertRequest: Issue.CreateReq = request.body;
       insertRequest.user = requestUser.userName;
-      console.log('insert issue=========================================');
-      console.log(insertRequest);
       const result: TransactionResult = await this.issueService.insertIssue(insertRequest);
       const insertedIssue: Issue.RetrieveRes = await this.issueService.getIssue({ issueId: result.insertId });
-      console.log(insertedIssue);
       return insertedIssue;
     });
   }
@@ -35,7 +32,6 @@ export class IssueController extends CommonController implements interfaces.Cont
   @httpGet("/issue")
   async retrieveIssue(@request() request: express.Request, @response() res: express.Response) {
     return await this.errorHandlingExecutor(request, ControllerType.ISSUE, MethodType.READ, async (requestUser: userSession.getRes) => {
-      console.log('retrieve issue=========================================');
       return await this.issueService.retrieveIssue<Issue.RetrieveRes[]>({ user: requestUser.userName });
     });
   }
@@ -45,11 +41,8 @@ export class IssueController extends CommonController implements interfaces.Cont
     return await this.errorHandlingExecutor(request, ControllerType.ISSUE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
       const updateRequest: Issue.UpdateReq = request.body;
       updateRequest.issueId = Number(request.params.id);
-      console.log('update issueName=========================================');
-      console.log(updateRequest);
       const result: TransactionResult = await this.issueService.updateIssue(updateRequest);
       const updatedIssue: Issue.RetrieveRes = await this.issueService.getIssue({ issueId: updateRequest.issueId });
-      console.log(updatedIssue);
       return updatedIssue;
     });
   }
@@ -58,8 +51,6 @@ export class IssueController extends CommonController implements interfaces.Cont
   async updateUseTime(@request() request: express.Request, @response() res: express.Response) {
     return await this.errorHandlingExecutor(request, ControllerType.ISSUE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
       const updateRequest: Issue.UpdateUseTimeReq = { issueId: Number(request.params.id) };
-      console.log('update use time=========================================');
-      console.log(updateRequest);
       return await this.issueService.updateUseTime(updateRequest);
     }, '소요시간');
   }
@@ -71,8 +62,6 @@ export class IssueController extends CommonController implements interfaces.Cont
         issueId: Number(request.params.id),
         issueState: request.params.state,
       };
-      console.log('update state=========================================');
-      console.log(updateRequest);
       return await this.issueService.updateState(updateRequest);
     }, '상태');
   }
@@ -81,8 +70,6 @@ export class IssueController extends CommonController implements interfaces.Cont
   async deleteIssue(@request() request: express.Request, @response() res: express.Response) {
     return await this.errorHandlingExecutor(request, ControllerType.ISSUE, MethodType.DELETE, async (requestUser: userSession.getRes) => {
       const deleteRequest: Issue.DeleteReq = { issueId: Number(request.params.id) };
-      console.log('delete issue=========================================');
-      console.log(deleteRequest);
       return await this.issueService.deleteIssue(deleteRequest);
     });
   }

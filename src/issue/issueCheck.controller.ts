@@ -22,8 +22,6 @@ export class IssueCheckController extends CommonController implements interfaces
   async insertIssueCheck(@request() request: express.Request, @response() res: express.Response) {
     return await this.errorHandlingExecutor(request, ControllerType.ISSUS_CHECK, MethodType.CREATE, async (requestUser: userSession.getRes) => {
       const insertRequest: IssueCheck.CreateReq[] = request.body;
-      console.log('insert issueCheck=========================================');
-      console.log(insertRequest);
       return await this.issueCheckService.insertIssueCheck(insertRequest);
     });
   }
@@ -32,8 +30,6 @@ export class IssueCheckController extends CommonController implements interfaces
   async retrieveIssueCheck(@request() request: express.Request, @response() res: express.Response) {
     return await this.errorHandlingExecutor(request, ControllerType.ISSUS_CHECK, MethodType.READ, async (requestUser: userSession.getRes) => {
       const searchRequest: IssueCheck.RetrieveReq = { issueId: Number(request.params.id) }
-      console.log('retrieve issueCheck=========================================');
-      console.log(searchRequest);
       return await this.issueCheckService.retrieveIssueCheck(searchRequest);
     });
   }
@@ -42,8 +38,6 @@ export class IssueCheckController extends CommonController implements interfaces
   async updateIssueCheck(@request() request: express.Request, @response() res: express.Response) {
     return await this.errorHandlingExecutor(request, ControllerType.ISSUS_CHECK, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
       const updateRequest: IssueCheck.UpdateReq[] = request.body;
-      console.log('update issueCheckName=========================================');
-      console.log(updateRequest);
       return await this.issueCheckService.updateIssueCheck(updateRequest);
     }, '이름');
   }
@@ -55,8 +49,6 @@ export class IssueCheckController extends CommonController implements interfaces
         issueId: Number(request.params.id),
         checkId: Number(request.params.checkId),
       };
-      console.log('update issueCheckCompleteYn=========================================');
-      console.log(updateRequest);
       return await this.issueCheckService.updateIssueCheckCompleteYn(updateRequest);
     }, '완료여부');
   }
@@ -65,8 +57,6 @@ export class IssueCheckController extends CommonController implements interfaces
   async deleteIssueCheck(@request() request: express.Request, @response() res: express.Response) {
     return await this.errorHandlingExecutor(request, ControllerType.ISSUS_CHECK, MethodType.DELETE, async (requestUser: userSession.getRes) => {
       const deleteRequest: IssueCheck.DeleteReq[] = request.body;
-      console.log('delete issueCheck=========================================');
-      console.log(deleteRequest);
       return await this.issueCheckService.deleteIssueCheck(deleteRequest);
     });
   }
