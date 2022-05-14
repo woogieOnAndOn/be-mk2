@@ -26,6 +26,10 @@ export class CommonController {
     let result: any;
     let success: boolean = true;
 
+    methodDetail = methodDetail ? `_${methodDetail}` : '';
+    console.log(`${controllerType}_${methodType}${methodDetail} =========================================`);
+    methodType === MethodType.READ ? console.log('request.query:', request.query) : console.log('request.body:', request.body);
+
     try {
       requestUser = await this.getUserSession(request);
       if (!requestUser) {
@@ -67,7 +71,6 @@ export class CommonController {
     }
 
     returnMessage.msObject = result;
-    methodDetail = methodDetail ? `_${methodDetail}` : '';
     
     if (methodType !== MethodType.READ) console.log(`메세지: \n ${returnMessage}`);
     console.log(`========================================= ${controllerType}_${methodType}${methodDetail}`);
