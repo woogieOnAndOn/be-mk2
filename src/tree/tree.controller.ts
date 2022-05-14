@@ -45,6 +45,17 @@ export class TreeController extends CommonController implements interfaces.Contr
     });
   }
 
+  @httpGet("/tree/:id")
+  async getTree(@request() request: express.Request, @response() res: express.Response) {
+    return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.READ, async (requestUser: userSession.getRes) => {
+      const getRequest: Tree.GetReq = {
+        id: Number(request.params.id),
+        user: requestUser.userName
+      };
+      return await this.treeService.getTree(getRequest);
+    }, '개별');
+  }
+
   @httpPut("/tree/:id")
   async updateTree(@request() request: express.Request, @response() res: express.Response) {
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
@@ -82,6 +93,15 @@ export class TreeController extends CommonController implements interfaces.Contr
       const updatedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: updateSeqRequest.id, user: requestUser.userName });
       return updatedTree;
     });
+  }
+
+  @httpPut("/tree/:id/seq/correct")
+  async correctSeqTargetTree(@request() request: express.Request, @response() res: express.Response) {
+    return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
+      const correctSeqRequest: Tree.CorrectSeqReq = request.body;
+      correctSeqRequest.parent = Number(request.params.id);
+      return await this.treeService.correctSeqTargetTree(correctSeqRequest);
+    }, 'seq 바로잡기');
   }
 
   @httpPut("/tree/:id/children")
