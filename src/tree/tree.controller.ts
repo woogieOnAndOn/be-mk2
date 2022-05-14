@@ -28,10 +28,8 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.CREATE, async (requestUser: userSession.getRes) => {
       const insertRequest: Tree.CreateReq = request.body;
       insertRequest.user = requestUser.userName;
-      console.log('insert tree=========================================');
       const result: TransactionResult = await this.treeService.insertTree(insertRequest);
       const insertedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: result.insertId, user: requestUser.userName });
-      console.log(insertedTree);
       return insertedTree;
     });
   }
@@ -43,8 +41,6 @@ export class TreeController extends CommonController implements interfaces.Contr
         parent: request.query.parent ? Number(request.query.parent) : 0,
         user: requestUser.userName,
       };
-      console.log('retrieve tree=========================================');
-      console.log(searchRequest);
       return await this.treeService.retrieveTree(searchRequest);
     });
   }
@@ -54,14 +50,12 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
       const updateRequest: Tree.UpdateReq = request.body;
       updateRequest.id = Number(request.params.id);
-      console.log('update tree=========================================');
       const result: TransactionResult = await this.treeService.updateTree(updateRequest);
       if (result.affectedRows !== 1) {
         throw new Error(JSON.stringify(result));
       }
 
       const updatedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: updateRequest.id, user: requestUser.userName });
-      console.log(updatedTree);
       return updatedTree;
     });
   }
@@ -71,8 +65,6 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.DELETE, async (requestUser: userSession.getRes) => {
       const deleteRequest: Tree.DeleteReq = request.body;
       deleteRequest.id = Number(request.params.id);
-      console.log('delete tree=========================================');
-      console.log(deleteRequest);
       return await this.treeService.deleteTree(deleteRequest);
     });
   }
@@ -82,15 +74,12 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
       const updateSeqRequest: Tree.UpdateSeqReq = request.body;
       updateSeqRequest.id = Number(request.params.id);
-      console.log('update seq tree=========================================');
-      console.log(updateSeqRequest);
       const result: TransactionResult = await this.treeService.updateSeqTree(updateSeqRequest);
       if (result.affectedRows !== 1) {
         throw new Error(JSON.stringify(result));
       }
 
       const updatedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: updateSeqRequest.id, user: requestUser.userName });
-      console.log(updatedTree);
       return updatedTree;
     });
   }
