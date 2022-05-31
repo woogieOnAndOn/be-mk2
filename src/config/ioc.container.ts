@@ -19,7 +19,6 @@ import { IssueRepository } from '../issue/issue.repository';
 import { IssueStateHistoryRepository } from '../issue/issueStateHistory.repository';
 
 import { FileController } from '../common/file.controller';
-import { TreeFileController } from '../tree/treeFile.controller';
 
 import { AWSFileUploader } from '../file/awsFileUploader';
 import { RemoteFileUpload } from '../file/remoteFileUpload';
@@ -50,7 +49,6 @@ try {
     container.bind<IssueStateHistoryRepository>('IssueStateHistoryRepository').to(IssueStateHistoryRepository);
 
     container.bind<FileController>('FileController').to(FileController);
-    container.bind<TreeFileController>('TreeFileController').to(TreeFileController);
 
     container.bind<AWSFileUploader>("AWSFileUploader").to(AWSFileUploader);
     container.bind<RemoteFileUpload>("RemoteFileUpload").to(RemoteFileUpload);
