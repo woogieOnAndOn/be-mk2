@@ -23,7 +23,7 @@ export class FileController implements interfaces.Controller {
     if (uploadFiles.length === 0) return response;
 
     const mappedFiles: File[] = uploadFiles.map((file: UploadedFile) => ({
-        name: `${file.name}-${Date.now()}`,
+        name: `${Date.now()}-${file.name}`,
         type: file.mimetype,
         content: file.data,
         size: file.size,
