@@ -5,7 +5,3 @@ export interface File {
   extension: string;
   content: ArrayBuffer;
 }
-
-// export interface UploadedFile {
-//   path: string;
-// }

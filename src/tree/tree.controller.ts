@@ -7,13 +7,15 @@ import * as Tree from './tree.model';
 import { CommonController } from "../common/common.controller";
 import * as userSession from '../userSession/userSession.model';
 import { UserSessionService } from "../userSession/userSession.service";
+import { FileController } from '../common/file.controller';
 
 @controller("")
 export class TreeController extends CommonController implements interfaces.Controller {
 
   constructor( 
     @inject('TreeService') private treeService: TreeService,
-    @inject('UserSessionService') userSessionService: UserSessionService
+    @inject('UserSessionService') userSessionService: UserSessionService,
+    @inject('FileController') private fileController: FileController,
   ) {
     super(userSessionService);
   }
@@ -113,5 +115,11 @@ export class TreeController extends CommonController implements interfaces.Contr
       const result: TransactionResult = await this.treeService.updateLocationTree(updateRequest);
       return result;
     }, '이동');
+  }
+
+  @httpPost("/upload")
+  async insertTreeFile(@request() req: express.Request, @response() res: express.Response) {
+    const filesPaths: string[] = await this.fileController.handleUploadFilesToS3(req, 'files');
+    return { paths: filesPaths }
   }
 }

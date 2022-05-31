@@ -1,11 +1,11 @@
 import 'reflect-metadata';
-import * as bodyParser from 'body-parser';
 import { interfaces, InversifyExpressServer, TYPE } from 'inversify-express-utils';
 import { container } from '../src/config/ioc.container'; 
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-import uploadRouter from "./file/upload.routes";
+import fileUpload from 'express-fileupload';
+import express from 'express';
 
 // create server
 let server = new InversifyExpressServer(container);
@@ -15,13 +15,13 @@ server.setConfig((app) => {
     credentials: true
   }))
   app.use(cookieParser());
-  app.use("/upload", uploadRouter);
+  app.use(fileUpload());
 
   // add body parser
-  app.use(bodyParser.urlencoded({
+  app.use(express.urlencoded({
     extended: true
   }));
-  app.use(bodyParser.json());
+  app.use(express.json());
 });
  
 let app = server.build();

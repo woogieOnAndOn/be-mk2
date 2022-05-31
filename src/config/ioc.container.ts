@@ -19,9 +19,8 @@ import { IssueRepository } from '../issue/issue.repository';
 import { IssueStateHistoryRepository } from '../issue/issueStateHistory.repository';
 
 import { FileController } from '../common/file.controller';
-
 import { AWSFileUploader } from '../file/awsFileUploader';
-import { RemoteFileUpload } from '../file/remoteFileUpload';
+
 import { UserSessionService } from '../userSession/userSession.service';
 import { UserSessionRepository } from '../userSession/userSession.repository';
 
@@ -49,9 +48,7 @@ try {
     container.bind<IssueStateHistoryRepository>('IssueStateHistoryRepository').to(IssueStateHistoryRepository);
 
     container.bind<FileController>('FileController').to(FileController);
-
     container.bind<AWSFileUploader>("AWSFileUploader").to(AWSFileUploader);
-    container.bind<RemoteFileUpload>("RemoteFileUpload").to(RemoteFileUpload);
 
     container.bind<UserSessionService>('UserSessionService').to(UserSessionService);
     container.bind<UserSessionRepository>('UserSessionRepository').to(UserSessionRepository);

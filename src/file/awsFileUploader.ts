@@ -13,31 +13,20 @@ export class AWSFileUploader {
   private readonly bucketName = s3Config.accessPoint;
 
   constructor() {
-    this.client = new AWS.S3({
-      region: s3Config.defaultRegion,
-    });
-  }
-
-  private generateFileKey(file: File, timestamp: number): string {
-    // console.log('generateFileKey');
-    return `${timestamp}-${file.name}`;
+    this.client = new AWS.S3({ region: s3Config.defaultRegion });
   }
 
   private async uploadFile(file: File): Promise<string> {
     // console.log('uploadFile');
     let result: string = '';
-    const timestamp = Date.now();
-    const fileKey = this.generateFileKey(file, timestamp);
 
     const uploadParams = {
       Bucket: this.bucketName,
-      Key: fileKey,
+      Key: file.name,
       ContentType: file.type,
       Body: file.content,
       ACL: s3Config.defaultFilesACL,
     };
-
-    // console.log(this.client);
 
     const response = await this.client.upload(uploadParams).promise();
 
