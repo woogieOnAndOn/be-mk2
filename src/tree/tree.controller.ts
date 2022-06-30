@@ -30,8 +30,8 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.CREATE, async (requestUser: userSession.getRes) => {
       const insertRequest: Tree.CreateReq = request.body;
       insertRequest.user = requestUser.userName;
-      const result: TransactionResult = await this.treeService.insertTree(insertRequest);
-      const insertedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: result.insertId, user: requestUser.userName });
+      const result: Tree.GetNextTreeIdRes = await this.treeService.insertTree(insertRequest);
+      const insertedTree: Tree.RetrieveRes = await this.treeService.getTree({ id: result.nextTreeId, user: requestUser.userName });
       return insertedTree;
     });
   }
@@ -63,6 +63,7 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
       const updateRequest: Tree.UpdateReq = request.body;
       updateRequest.id = Number(request.params.id);
+      updateRequest.user = requestUser.userName;
       const result: TransactionResult = await this.treeService.updateTree(updateRequest);
       if (result.affectedRows !== 1) {
         throw new Error(JSON.stringify(result));
@@ -78,6 +79,7 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.DELETE, async (requestUser: userSession.getRes) => {
       const deleteRequest: Tree.DeleteReq = request.body;
       deleteRequest.id = Number(request.params.id);
+      deleteRequest.user = requestUser.userName;
       return await this.treeService.deleteTree(deleteRequest);
     });
   }
@@ -87,6 +89,7 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
       const updateSeqRequest: Tree.UpdateSeqReq = request.body;
       updateSeqRequest.id = Number(request.params.id);
+      updateSeqRequest.user = requestUser.userName;
       const result: TransactionResult = await this.treeService.updateSeqTree(updateSeqRequest);
       if (result.affectedRows !== 1) {
         throw new Error(JSON.stringify(result));
@@ -102,6 +105,7 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
       const correctSeqRequest: Tree.CorrectSeqReq = request.body;
       correctSeqRequest.parent = Number(request.params.id);
+      correctSeqRequest.user = requestUser.userName;
       return await this.treeService.correctSeqTargetTree(correctSeqRequest);
     }, 'seq 바로잡기');
   }
@@ -111,6 +115,7 @@ export class TreeController extends CommonController implements interfaces.Contr
     return await this.errorHandlingExecutor(request, ControllerType.TREE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {
       const updateRequest: Tree.UpdateLocationReq = request.body;
       updateRequest.parent = Number(request.params.id);
+      updateRequest.user = requestUser.userName;
       console.log('update location tree=========================================');
       const result: TransactionResult = await this.treeService.updateLocationTree(updateRequest);
       return result;

@@ -16,7 +16,15 @@ export class TreeService {
 
   async insertTree<T>(request: Tree.CreateReq, inputConnection?: PoolConnection): Promise<T> {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
-        return await this.repository.insertTree(request, connection)
+        const nextTreeIdRes: Tree.GetNextTreeIdRes = await this.repository.getNextTreeIdByUser({ user: request.user }, connection);
+        request.id = nextTreeIdRes.nextTreeId;
+        const result: TransactionResult = await this.repository.insertTree(request, connection);
+        console.log(result);
+        if (result.affectedRows === 1) {
+          return  nextTreeIdRes;
+        } else {
+          throw new Error;
+        }
     }, inputConnection)
   }
 
@@ -45,7 +53,11 @@ export class TreeService {
 
       while (deleteTargetMinus.length > 0) {
         requestDeleteTarget = Number(deleteTargetMinus.pop());
-        let targetChildren: Tree.RetrieveRes[] = await this.repository.retrieveDeleteTarget(requestDeleteTarget, connection);
+        const retrieveDeleteTargetReq: Tree.RetrieveDeleteTargetReq = {
+          id: requestDeleteTarget,
+          user: request.user
+        }
+        let targetChildren: Tree.RetrieveRes[] = await this.repository.retrieveDeleteTarget(retrieveDeleteTargetReq, connection);
         for (let child of targetChildren) {
           deleteTargetMinus.push(child.id);
           deleteTargetPlus.push(child.id);
@@ -53,7 +65,10 @@ export class TreeService {
       }
       console.log(deleteTargetPlus);
 
-      const finalRequest =  deleteTargetPlus.toString();
+      const finalRequest: Tree.DeleteMultipleReq = {
+        ids: deleteTargetPlus.toString(),
+        user: request.user,
+      };
       return await this.repository.deleteTree(finalRequest);
     }, inputConnection);
   }
@@ -85,8 +100,8 @@ export class TreeService {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       const result: TransactionResult = await this.repository.updateLocationTree(request, connection);
       if (result.affectedRows > 0) {
-        await this.correctSeqTargetTree({ type: Tree.Type.FORDER, parent: request.parent });
-        await this.correctSeqTargetTree({ type: Tree.Type.FILE,   parent: request.parent });
+        await this.correctSeqTargetTree({ type: Tree.Type.FORDER, parent: request.parent, user: request.user });
+        await this.correctSeqTargetTree({ type: Tree.Type.FILE,   parent: request.parent, user: request.user });
       } else {
         throw new Error;
       }

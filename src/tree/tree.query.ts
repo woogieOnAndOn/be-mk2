@@ -2,6 +2,7 @@ import { QueryInfo } from '../common/common.model';
 import { UpDown } from './tree.model';
 
 export enum TreeQueryId {
+  getNextTreeIdByUser,
   insertTree,
   updateTree,
   deleteTree,
@@ -23,10 +24,20 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
   const queryParams: any[] = [];
 
   switch(queryId) {
+    case TreeQueryId.getNextTreeIdByUser:
+      query.push(`
+        SELECT IFNULL(MAX(tr.id), 0) + 1 AS nextTreeId
+        FROM md2.tree tr
+        WHERE tr.user = ?
+      `);
+      queryParams.push(request.user);
+      break;
+
     case TreeQueryId.insertTree:
       query.push(`
         INSERT INTO md2.tree
         (
+          id,
           type,
           name,
           content,
@@ -35,26 +46,28 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           user
         )
         VALUES
-        (?, ?, ?, ?,
+        (?, ?, ?, ?, ?,
           (
             SELECT IFNULL(MAX(tr.seq), 0) + 1
             FROM md2.tree tr
-            WHERE tr.type = ?
+            WHERE tr.user = ?
             AND tr.parent = ?
-            AND tr.user = ?
+            AND tr.type = ? 
             AND tr.delete_yn = 'N'
           ),
           ?
         )                  
       `);
+      queryParams.push(request.id);
+
       queryParams.push(request.type);
       queryParams.push(request.name);
       queryParams.push(request.content);
       queryParams.push(request.parent);
 
-      queryParams.push(request.type);
-      queryParams.push(request.parent);
       queryParams.push(request.user);
+      queryParams.push(request.parent);
+      queryParams.push(request.type);
 
       queryParams.push(request.user);
       break;
@@ -65,10 +78,12 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         SET
           name = ?,
           content = ?
-        WHERE id = ?        
+        WHERE user = ?
+        AND id = ?
       `);
       queryParams.push(request.name);
       queryParams.push(request.content);
+      queryParams.push(request.user);
       queryParams.push(request.id);
       break;
 
@@ -77,8 +92,10 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         UPDATE md2.tree
         SET 
           delete_yn = 'Y'
-        WHERE id IN (${request})
+        WHERE user = ?
+        AND id IN (${request.ids})
       `);
+      queryParams.push(request.user);
       break;
 
     case TreeQueryId.retrieveTree:
@@ -91,12 +108,12 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.parent,
           NULL AS children
         FROM md2.tree tr
-        WHERE tr.parent = ?
-        AND tr.user = ?
+        WHERE tr.user = ?
+        AND tr.parent = ?
         AND tr.delete_yn = 'N'
       `);
-      queryParams.push(request.parent);
       queryParams.push(request.user);
+      queryParams.push(request.parent);
 
       query.push(`
         ORDER BY tr.type, tr.seq
@@ -112,10 +129,12 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.content,
           tr.parent
         FROM md2.tree tr
-        WHERE tr.parent = ?
+        WHERE tr.user = ?
+        AND tr.parent = ?
         AND tr.delete_yn = 'N'
       `);
-      queryParams.push(request);
+      queryParams.push(request.user);
+      queryParams.push(request.id);
       break;
     
     case TreeQueryId.updateSeqSurroundingTree:
@@ -132,7 +151,8 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
               ,t.id
               ,t.seq
             FROM md2.tree t
-            WHERE t.parent = ?
+            WHERE t.user = ?
+            AND t.parent = ?
             AND t.type = ?
             ORDER BY seq 
           ) AS t1
@@ -141,7 +161,8 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
               RANK() OVER(ORDER BY t.seq) AS 'num'
               ,t.id
             FROM md2.tree t
-            WHERE t.parent = ?
+            WHERE t.user = ?
+            AND t.parent = ?
             AND t.type = ?
             ORDER BY seq 
           ) AS t2
@@ -151,8 +172,10 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         SET tr.seq = sq.givSeq
         WHERE tr.id = sq.surroundId
       `);
+      queryParams.push(request.user);
       queryParams.push(request.parent);
       queryParams.push(request.type);
+      queryParams.push(request.user);
       queryParams.push(request.parent);
       queryParams.push(request.type);
       queryParams.push(request.id);
@@ -163,8 +186,10 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
       query.push(`
         UPDATE md2.tree 
         SET seq = seq ${request.upDown === UpDown.UP? `-` : `+`} 1
-        WHERE id = ?
+        WHERE user = ?
+        AND id = ?
       `);
+      queryParams.push(request.user);
       queryParams.push(request.id);
       break;
     
@@ -178,8 +203,10 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           tr.parent,
           NULL AS children
         FROM md2.tree tr
-        WHERE tr.id = ?
+        WHERE tr.user = ?
+        AND tr.id = ?
       `);
+      queryParams.push(request.user);
       queryParams.push(request.id);
       break;
     
@@ -192,12 +219,14 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           FROM (
             SELECT * 
             FROM md2.tree t 
-            WHERE t.parent = ?
+            WHERE tr.user = ?
+            AND t.parent = ?
             AND t.type = ?
             ORDER BY seq
           ) AS t1
         )      
       `);
+      queryParams.push(request.user);
       queryParams.push(request.parent);
       queryParams.push(request.type);
       break;
@@ -208,8 +237,10 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         SET 
           t.parent = ?
           ,t.seq = 99999999
-        WHERE t.id IN (
+        WHERE tr.user = ?
+        AND t.id IN (
       `);
+      queryParams.push(request.user);
       queryParams.push(request.parent);
 
       request.ids && request.ids.forEach((id: number, index: number, ids: number[]) => {

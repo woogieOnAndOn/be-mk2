@@ -104,6 +104,8 @@ dist
 # TernJS port file
 .tern-port
 
+.vscode
+
 # 배포시 필요
 .env
 src/config/s3.config.json

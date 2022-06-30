@@ -21,7 +21,16 @@ export interface RetrieveRes {
   user: string;
 }
 
+export interface GetNextTreeIdReq {
+  user: string;
+}
+
+export interface GetNextTreeIdRes {
+  nextTreeId: number;
+}
+
 export interface CreateReq {
+  id: number;
   type: number;            // 10: folder, 20: file
   name: string;
   content: string;
@@ -36,9 +45,19 @@ export interface UpdateReq {
   user: string;
 }
 
+export interface RetrieveDeleteTargetReq {
+  id: number;
+  user: string;
+}
+
 export interface DeleteReq {
   id: number;
   type: number;            // 10: folder, 20: file
+  user: string;
+}
+
+export interface DeleteMultipleReq {
+  ids: string;
   user: string;
 }
 
@@ -58,11 +77,13 @@ export interface GetReq {
 export interface CorrectSeqReq {
   type: number;            // 10: folder, 20: file
   parent: number;
+  user: string;
 }
 
 export interface UpdateLocationReq {
   parent: number;
   ids: number[];
+  user: string;
 }
 
 export enum Type {

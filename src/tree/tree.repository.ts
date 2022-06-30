@@ -13,6 +13,12 @@ export class TreeRepository extends CommonRepository {
     this.init();
   }
 
+  async getNextTreeIdByUser<T>(request: Tree.GetNextTreeIdReq, connection?: any): Promise<T> {
+    const queryInfo: QueryInfo = TreeQuery(TreeQueryId.getNextTreeIdByUser, request);
+    const rows = await this.query<T>(queryInfo.query, queryInfo.queryParams, connection);
+    return rows[0];
+  }
+
   async insertTree<T>(request: Tree.CreateReq, connection?: any): Promise<T> {
     const queryInfo: QueryInfo = TreeQuery(TreeQueryId.insertTree, request);
     return await this.insertByObj<T>(queryInfo.query, queryInfo.queryParams, connection);
@@ -28,12 +34,12 @@ export class TreeRepository extends CommonRepository {
     return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 
-  async retrieveDeleteTarget<T>(request: number, connection?: any): Promise<T[]> {
+  async retrieveDeleteTarget<T>(request: Tree.RetrieveDeleteTargetReq, connection?: any): Promise<T[]> {
     const queryInfo: QueryInfo = TreeQuery(TreeQueryId.retrieveDeleteTarget, request);
     return await this.query<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
 
-  async deleteTree<T>(request: string, connection?: any): Promise<T> {
+  async deleteTree<T>(request: Tree.DeleteMultipleReq, connection?: any): Promise<T> {
     const queryInfo: QueryInfo = TreeQuery(TreeQueryId.deleteTree, request);
     return await this.execute<T>(queryInfo.query, queryInfo.queryParams, connection);
   }
