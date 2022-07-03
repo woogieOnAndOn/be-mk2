@@ -47,6 +47,7 @@ export class IssueController extends CommonController implements interfaces.Cont
     });
   }
 
+  // 트리거 생성으로 미사용, 트리거 이름: m2.updateUseTime
   @httpPut("/issue/:id/useTime")
   async updateUseTime(@request() request: express.Request, @response() res: express.Response) {
     return await this.errorHandlingExecutor(request, ControllerType.ISSUE, MethodType.UPDATE, async (requestUser: userSession.getRes) => {

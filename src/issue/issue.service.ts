@@ -82,11 +82,11 @@ export class IssueService {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       let result;
       
-      const stateResult: TransactionResult = await this.repository.updateState(request, connection);
-      if (stateResult.affectedRows !== 1) throw new Error;
-
       const historyResult: TransactionResult = await this.issueStateHistoryRepository.insertIssueStateHistory(request, connection);
       if (historyResult.affectedRows !== 1) throw new Error;
+      
+      const stateResult: TransactionResult = await this.repository.updateState(request, connection);
+      if (stateResult.affectedRows !== 1) throw new Error;
       
       result = historyResult;
       return result;
