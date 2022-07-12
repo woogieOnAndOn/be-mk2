@@ -240,8 +240,8 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         WHERE t.user = ?
         AND t.id IN (
       `);
-      queryParams.push(request.user);
       queryParams.push(request.parent);
+      queryParams.push(request.user);
 
       request.ids && request.ids.forEach((id: number, index: number, ids: number[]) => {
         query.push(`?`);
