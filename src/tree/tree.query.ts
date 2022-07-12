@@ -219,7 +219,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
           FROM (
             SELECT * 
             FROM md2.tree t 
-            WHERE tr.user = ?
+            WHERE t.user = ?
             AND t.parent = ?
             AND t.type = ?
             ORDER BY seq
@@ -237,7 +237,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         SET 
           t.parent = ?
           ,t.seq = 99999999
-        WHERE tr.user = ?
+        WHERE t.user = ?
         AND t.id IN (
       `);
       queryParams.push(request.user);
