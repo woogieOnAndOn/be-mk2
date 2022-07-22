@@ -212,19 +212,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
     
     case TreeQueryId.correctSeqTargetTree:
       query.push(`
-        UPDATE md2.tree t2, (SELECT @seqNum:= 0 ) r
-        SET t2.seq = (@seqNum := @seqNum + 1)
-        WHERE t2.id IN (
-          SELECT t1.id 
-          FROM (
-            SELECT * 
-            FROM md2.tree t 
-            WHERE t.user = ?
-            AND t.parent = ?
-            AND t.type = ?
-            ORDER BY seq
-          ) AS t1
-        )      
+        CALL md2.correctSeqTargetTree(?, ?, ?);
       `);
       queryParams.push(request.user);
       queryParams.push(request.parent);
