@@ -93,6 +93,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         SET 
           delete_yn = 'Y'
           ,seq = 9999
+          ,deleted_date = CURDATE()
         WHERE user = ?
         AND id IN (${request.ids})
       `);
