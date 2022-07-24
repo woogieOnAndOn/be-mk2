@@ -213,11 +213,10 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
     
     case TreeQueryId.correctSeqTargetTree:
       query.push(`
-        CALL md2.correctSeqTargetTree(?, ?, ?);
+        CALL md2.correctSeqTargetTree(?, ?);
       `);
       queryParams.push(request.user);
       queryParams.push(request.parent);
-      queryParams.push(request.type);
       break;
     
     case TreeQueryId.updateLocationTree:

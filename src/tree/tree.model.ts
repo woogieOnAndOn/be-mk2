@@ -75,7 +75,6 @@ export interface GetReq {
 }
 
 export interface CorrectSeqReq {
-  type: number;            // 10: folder, 20: file
   parent: number;
   user: string;
 }

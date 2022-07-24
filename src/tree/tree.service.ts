@@ -100,8 +100,7 @@ export class TreeService {
     return await this.commonService.transactionExecutor(async (connection: PoolConnection) => {
       const result: TransactionResult = await this.repository.updateLocationTree(request, connection);
       if (result.affectedRows > 0) {
-        await this.correctSeqTargetTree({ type: Tree.Type.FORDER, parent: request.parent, user: request.user });
-        await this.correctSeqTargetTree({ type: Tree.Type.FILE,   parent: request.parent, user: request.user });
+        await this.correctSeqTargetTree({ parent: request.parent, user: request.user });
       } else {
         throw new Error;
       }
