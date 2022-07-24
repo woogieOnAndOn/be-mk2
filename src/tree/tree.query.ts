@@ -92,6 +92,7 @@ export const TreeQuery = (queryId: TreeQueryId, request: any = {}) => {
         UPDATE md2.tree
         SET 
           delete_yn = 'Y'
+          ,seq = 9999
         WHERE user = ?
         AND id IN (${request.ids})
       `);
